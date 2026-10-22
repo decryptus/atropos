@@ -103,7 +103,8 @@ be imported back into this limited YAML schema.
 
 The intended editing paths share one validated dictionary model:
 
-- A future web/TUI form edits that model, then serializes it to YAML.
+- Atraxis editing interfaces send drafts to the Atropos service, which validates
+  the shared authoring model.
 - The advanced editor parses YAML into the same model.
 - File import uses the same parser, and export uses the same serializer.
 - The compiler converts the model to JDM; ZEN evaluates the compiled decision.
@@ -112,8 +113,10 @@ The prototype API exposes `validate_rules`, `parse_rules`, `dump_rules`,
 `simple_editor_supported` and `replace_from_simple_editor`. Simple form support
 covers individual comparisons and flat `all` groups. Nested `all`/`any`/`not`
 stays in YAML mode. Attempting to replace an advanced model through the simple
-editor API is rejected rather than silently flattening it. No web/TUI editor is
-built yet, and the pilot's advanced YAML still only supports the defined subset.
+editor API is rejected rather than silently flattening it. The
+[Atraxis web workbench](https://github.com/decryptus/atraxis/blob/main/docs/web-rules.md)
+and [operator CLI/TUI](https://github.com/decryptus/atraxis/blob/main/docs/rule-console.md)
+use the independent service. Advanced YAML remains limited to the defined subset.
 
 To use a rule in a workflow, register an approved immutable model:
 

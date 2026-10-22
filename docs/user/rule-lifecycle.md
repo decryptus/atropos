@@ -1,9 +1,10 @@
 # Drafts, tests and active rule versions
 
-This Python API manages decision rules. The CLI catalog remains available. Atraxis now supplies a separate
-[local operator CLI and TUI](https://github.com/decryptus/atraxis/blob/main/docs/rule-console.md);
-these controls now call the independent [Atropos HTTP service](rule-service.md).
-A web editor remains unimplemented.
+This Python API manages decision rules. The CLI catalog remains available.
+Atraxis supplies a [local operator CLI and TUI](https://github.com/decryptus/atraxis/blob/main/docs/rule-console.md)
+and a [web rule workbench](https://github.com/decryptus/atraxis/blob/main/docs/web-rules.md).
+These interfaces use the independent [Atropos HTTP service](rule-service.md) for
+scoped draft editing, scenario tests and explicit lifecycle changes.
 An active version is selected for explicit `evaluate_active` calls. Activation
 alone does not start a collector, send alerts, submit jobs or execute actions.
 
@@ -152,10 +153,11 @@ event commit atomically in Redis. A newer test report racing activation causes a
 conflict. Evaluation discards its result if the active generation changes while
 ZEN runs, and checks permissions again before returning.
 
-Policy checks use the loader's current snapshot. Distributed policy epochs,
-strongly atomic policy revocation with Redis writes, authoritative inventory
-freshness, HTTPS identity integration and execution-time dispatch bindings remain
-future work. A removed resource may require trusted inventory/policy repair before
+Policy checks use the loader's current snapshot. Distributed policy epochs and
+strongly atomic policy revocation with Redis writes remain outside this API.
+The low-level API does not authenticate a transport, refresh external inventory
+or dispatch actions. Use the [HTTP service](rule-service.md) for authenticated
+calls and [guarded dispatch](rule-dispatch.md) for approved execution bindings. A removed resource may require trusted inventory/policy repair before
 its old scope can be deactivated. No privileged bypass is provided implicitly.
 Redis loss/rollback can lose lifecycle evidence; use persistence and tested backups.
 
