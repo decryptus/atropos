@@ -1,0 +1,19 @@
+version: 1
+name: storage-policy
+description: Nested conditions remain editable as YAML without flattening them.
+inputs:
+  disk_percent: number
+  inode_percent: number
+  writable: boolean
+  maintenance: boolean
+rules:
+  - id: storage_pressure
+    when:
+      all:
+        - not: {field: maintenance, eq: true}
+        - any:
+            - {field: disk_percent, gte: 90}
+            - {field: inode_percent, gte: 95}
+            - {field: writable, eq: false}
+    then: diagnose
+default: ignore

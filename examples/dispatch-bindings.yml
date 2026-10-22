@@ -1,0 +1,21 @@
+# Trusted administrator-owned file, mode 0600. Replace revision with the exact
+# tested/active rule revision. This example only runs the harmless echo action.
+- organization: example
+  rule: cpu
+  revision: '00000000000000000000000000000000'
+  result:
+    decision: review
+    matched_rule: combined
+  max_age_seconds: 60
+  input:
+    message: Reviewed CPU pressure
+  workflow:
+    version: 1
+    name: inspect-pressure
+    start: record
+    steps:
+      record:
+        action: core.echo
+        with:
+          message: {$ref: /input/message}
+          target: {$ref: /target}

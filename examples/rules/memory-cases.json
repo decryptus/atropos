@@ -1,0 +1,8 @@
+[
+  {"name": "high memory", "input": {"memory_percent": 94, "maintenance": false, "restart_count": 0}, "expected": {"decision": "diagnose", "matched_rule": "high_memory"}},
+  {"name": "maintenance takes precedence", "input": {"memory_percent": 99, "maintenance": true, "restart_count": 4}, "expected": {"decision": "hold", "matched_rule": "maintenance"}},
+  {"name": "avoid repeated restart", "input": {"memory_percent": 99, "maintenance": false, "restart_count": 2}, "expected": {"decision": "notify", "matched_rule": "repeated_restart"}},
+  {"name": "healthy", "input": {"memory_percent": 40, "maintenance": false, "restart_count": 0}, "expected": {"decision": "ignore", "matched_rule": "__default__"}},
+  {"name": "threshold inclusive", "input": {"memory_percent": 90, "maintenance": false, "restart_count": 0}, "expected": {"decision": "diagnose", "matched_rule": "high_memory"}},
+  {"name": "just below threshold", "input": {"memory_percent": 89.9, "maintenance": false, "restart_count": 0}, "expected": {"decision": "ignore", "matched_rule": "__default__"}}
+]

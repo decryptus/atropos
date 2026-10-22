@@ -1,0 +1,57 @@
+name: Auton execution and restore
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: decryptus/auton
+          ref: 7f57348b144fa62400bad31160d4b4ad5c00f53c
+          path: .auton-source
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install independent client and daemon environments
+        run: |
+          python -m venv /tmp/atropos-acceptance
+          python -m venv /tmp/autond-acceptance
+          /tmp/atropos-acceptance/bin/python -m pip install ./client
+          /tmp/atropos-acceptance/bin/python -m pip install '.[redis,service,exchange]' redislite==6.2.912183
+          AUTON_PACKAGE=auton /tmp/atropos-acceptance/bin/python -m pip install ./.auton-source
+          AUTON_PACKAGE=autond /tmp/autond-acceptance/bin/python -m pip install ./.auton-source
+      - name: Collect every integration declaration
+        run: /tmp/atropos-acceptance/bin/python scripts/check-test-collection.py service_tests integration_tests
+      - name: Start disposable Alertmanager with no downstream integrations
+        run: |
+          mkdir -p "$RUNNER_TEMP/alertmanager"
+          cat > "$RUNNER_TEMP/alertmanager/config.yml" <<'YAML'
+          route:
+            receiver: discard
+          receivers:
+            - name: discard
+          YAML
+          docker run --detach --rm --name atropos-alertmanager \
+            --publish 127.0.0.1:19093:9093 \
+            --volume "$RUNNER_TEMP/alertmanager/config.yml:/etc/alertmanager/alertmanager.yml:ro" \
+            prom/alertmanager:v0.28.1 --config.file=/etc/alertmanager/alertmanager.yml --cluster.listen-address=
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:19093/-/ready; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Exercise real execution and restore in disposable infrastructure
+        env:
+          AUTON_TEST_SOURCE: ${{ github.workspace }}/.auton-source
+          AUTON_TEST_DAEMON: /tmp/autond-acceptance/bin/autond
+          ATROPOS_TEST_ALERTMANAGER_PORT: '19093'
+        run: |
+          /tmp/atropos-acceptance/bin/python -m unittest discover -s service_tests -v
+          /tmp/atropos-acceptance/bin/python -m unittest discover -s integration_tests -v
+      - name: Stop disposable Alertmanager
+        if: always()
+        run: docker rm --force atropos-alertmanager || true

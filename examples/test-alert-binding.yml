@@ -1,0 +1,22 @@
+# Private administrator-owned example. Replace organization/rule/revision;
+# do not activate or register real executors implicitly.
+- organization: example
+  rule: cpu
+  revision: '00000000000000000000000000000000'
+  result: {decision: review, matched_rule: combined}
+  max_age_seconds: 60
+  input: {}
+  workflow:
+    version: 1
+    name: intervention-and-alert
+    start: intervene
+    steps:
+      intervene:
+        action: core.echo
+        with: {status: completed}
+        next: notify
+      notify:
+        action: core.alert
+        with:
+          subject: Intervention completed
+          status: {$ref: /results/intervene/status}

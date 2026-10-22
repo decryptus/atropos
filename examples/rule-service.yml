@@ -1,0 +1,44 @@
+# Atropos engine ONLY. Copy to a private file (chmod 600).
+version: 1
+namespace: rule-example
+storage:
+  backend: redis
+  url: redis://127.0.0.1:16379/0
+queue:
+  backend: storage
+
+identities:
+  - token_sha256: REPLACE_WITH_ATROPOS_TOKEN_SHA256
+    subject: remote-operator
+    organization: example
+resources:
+  - organization: example
+    kind: server
+    id: host-example
+    groups: [lab]
+  - organization: example
+    kind: container
+    id: web-example
+    server_id: host-example
+    groups: [webapps]
+grants:
+  - subject: remote-operator
+    organization: example
+    rule_kind: intervention
+    operations: [read, create, update, save, import, export, test, activate, deactivate, rollback, evaluate]
+    scopes: [[container_group, webapps]]
+    providers: [internal, upload, download]
+
+# Optional trusted approval file. Absent means no dispatch is approved.
+# dispatch_bindings: dispatch-bindings.yml
+
+# Optional pinned gateway observation verification keys (private files).
+# observation_keys:
+#   gateway-1: observation-public.pem
+
+# Optional dedicated test receiver; requires its acknowledgement contract.
+# test_alert_delivery:
+#   backend: webhook
+#   url: https://test-receiver.example
+#   token_file: test-receiver.token
+#   timeout: 5

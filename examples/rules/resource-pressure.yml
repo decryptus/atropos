@@ -1,0 +1,21 @@
+version: 1
+name: resource-pressure
+description: Draft from Atropos catalog v1; review thresholds and scope before activation.
+inputs:
+  cpu_percent: number
+  memory_percent: number
+checks:
+  cpu-high:
+    field: cpu_percent
+    gte: 90
+  memory-high:
+    field: memory_percent
+    gte: 90
+rules:
+- id: combined
+  when:
+    all:
+    - ref: cpu-high
+    - ref: memory-high
+  then: review
+default: ignore

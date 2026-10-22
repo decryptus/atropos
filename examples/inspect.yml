@@ -1,0 +1,18 @@
+version: 1
+name: inspect-demo
+start: inspect
+steps:
+  inspect:
+    action: core.echo
+    with:
+      target:
+        $ref: /target
+      decision: report
+    on_decision:
+      report: report
+  report:
+    action: core.echo
+    with:
+      inspected_target:
+        $ref: /results/inspect/target
+      message: This example performs no external action.

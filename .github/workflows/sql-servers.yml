@@ -1,0 +1,67 @@
+name: AnySQL server contracts
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  sql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgresql:
+        image: postgres:16
+        env:
+          POSTGRES_DB: atropos_test
+          POSTGRES_USER: anysql
+          POSTGRES_PASSWORD: synthetic-test-password
+        ports: ['35432:5432']
+        options: >-
+          --health-cmd "pg_isready -U anysql -d atropos_test"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: atropos_test
+          MYSQL_ROOT_PASSWORD: synthetic-test-password
+          MYSQL_ROOT_HOST: '%'
+        ports: ['33306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_DATABASE: atropos_test
+          MARIADB_ROOT_PASSWORD: synthetic-test-password
+          MARIADB_ROOT_HOST: '%'
+        ports: ['33307:3306']
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install candidate and disposable test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes redis-server default-libmysqlclient-dev pkg-config
+          python -m pip install '.[postgresql,mysql,redis,zen,exchange]' ./client
+      - run: python scripts/check-test-collection.py sql_tests
+      - name: PostgreSQL contracts
+        if: '!cancelled()'
+        env:
+          ATROPOS_SQL_TEST_URL: postgresql://anysql:synthetic-test-password@127.0.0.1:35432/atropos_test
+        run: python -m unittest discover -s sql_tests -v
+      - name: MySQL contracts
+        if: '!cancelled()'
+        env:
+          ATROPOS_SQL_TEST_URL: mysql://root:synthetic-test-password@127.0.0.1:33306/atropos_test
+        run: python -m unittest discover -s sql_tests -v
+      - name: MariaDB contracts
+        if: '!cancelled()'
+        env:
+          ATROPOS_SQL_TEST_URL: mysql://root:synthetic-test-password@127.0.0.1:33307/atropos_test
+        run: python -m unittest discover -s sql_tests -v

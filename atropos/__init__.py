@@ -1,0 +1,2 @@
+"""Atropos: interface-independent workflow services, with no AI dependency."""
+__version__ = "0.1.0a20"

@@ -1,0 +1,22 @@
+name: Independent API client
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install ./client
+      - run: python scripts/check-test-collection.py client_tests
+      - run: python -m unittest discover -s client_tests -v
+      - name: Verify installed client without engine dependencies
+        run: |
+          cd "$RUNNER_TEMP"
+          python -c 'import importlib.util; from atropos_client.client import RuleClient; assert importlib.util.find_spec("atropos") is None; assert importlib.util.find_spec("redis") is None; assert importlib.util.find_spec("zen") is None'

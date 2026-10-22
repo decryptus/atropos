@@ -1,0 +1,53 @@
+name: AnySQL verified remote TLS
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  tls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: decryptus/sonicprobe
+          ref: a1cca4624910e26669484fe6826e67837b28ff4a
+          path: test-fixtures/sonicprobe
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install candidate and test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes redis-server default-libmysqlclient-dev pkg-config
+          python -m pip install '.[postgresql,mysql,redis,zen,exchange]' ./client
+      - name: Start disposable TLS fixtures
+        run: |
+          bash test-fixtures/sonicprobe/.github/scripts/sql-tls-fixture.sh start "$RUNNER_TEMP/sql-tls-fixtures"
+          echo "ATROPOS_SQL_TEST_TLS_CA=$RUNNER_TEMP/sql-tls-fixtures/ca.pem" >> "$GITHUB_ENV"
+      - name: Prepare dedicated databases over verified TLS
+        run: python scripts/prepare-sql-tls-tests.py
+      - run: python scripts/check-test-collection.py sql_tests sql_tls_tests
+      - name: PostgreSQL contracts over verified TLS
+        env:
+          ATROPOS_SQL_TEST_URL: postgresql://anysql:synthetic-test-password@127.0.0.1:35432/atropos_test
+        run: python -m unittest discover -s sql_tests -v
+      - name: MySQL contracts over verified TLS
+        if: '!cancelled()'
+        env:
+          ATROPOS_SQL_TEST_URL: mysql://anysql:synthetic-test-password@127.0.0.1:33306/atropos_test
+        run: python -m unittest discover -s sql_tests -v
+      - name: MariaDB contracts over verified TLS
+        if: '!cancelled()'
+        env:
+          ATROPOS_SQL_TEST_URL: mysql://anysql:synthetic-test-password@127.0.0.1:33316/atropos_test
+        run: python -m unittest discover -s sql_tests -v
+      - name: Reject invalid TLS before opening storage
+        if: '!cancelled()'
+        run: python -m unittest discover -s sql_tls_tests -v
+      - name: Stop disposable SQL fixtures
+        if: always()
+        run: bash test-fixtures/sonicprobe/.github/scripts/sql-tls-fixture.sh stop

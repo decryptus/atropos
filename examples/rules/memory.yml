@@ -1,0 +1,21 @@
+version: 1
+name: memory-policy
+description: Prefer observation during maintenance and prevent repeated interventions.
+inputs:
+  memory_percent: number
+  maintenance: boolean
+  restart_count: integer
+rules:
+  - id: maintenance
+    when: {field: maintenance, eq: true}
+    then: hold
+  - id: repeated_restart
+    when: {field: restart_count, gte: 2}
+    then: notify
+  - id: high_memory
+    when:
+      all:
+        - {field: memory_percent, gte: 90}
+        - {field: maintenance, eq: false}
+    then: diagnose
+default: ignore
