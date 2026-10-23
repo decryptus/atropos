@@ -12,10 +12,21 @@ of uncertain runs. The plain workflow CLI includes harmless demonstration action
 service can register [approved Auton executors](docs/user/execution-adapters.md)
 from its private engine profile. Trusted applications may also register actions.
 
+[Project website](https://atraxis.io/#atropos) · [User guide](docs/user/README.md) ·
+[Contributing](docs/contributor/README.md) · [Roadmap](ROADMAP.md)
+
 ## Start here
 
 Requires Python 3.11+. SQLite is the default storage; PostgreSQL, MySQL/MariaDB and Redis are optional.
-Install the source checkout with `python -m pip install .`.
+Install the source checkout in a dedicated virtual environment:
+
+```sh
+git clone https://github.com/decryptus/atropos.git
+cd atropos
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+```
 
 ```sh
 atropos validate examples/inspect.yml
@@ -53,7 +64,7 @@ experimental development version, not a production-readiness or package-release 
 
 Atropos owns the rule lifecycle and persistence. Run its [standalone rule API](docs/user/rule-service.md) for Atraxis or other authorized clients. The separately installable [client package](client/README.md) contains no engine, Redis or ZEN dependency.
 
-Authorized operators can now [preview and explicitly dispatch an approved workflow](docs/user/rule-dispatch.md), with current rights checked before each step. The shipped service registers demonstration actions only.
+Authorized operators can now [preview and explicitly dispatch an approved workflow](docs/user/rule-dispatch.md), with current rights checked before each step. The default service registers demonstration actions; explicitly configured approved executors require their own trusted profile and permissions.
 
 [Verified observations and administrator tests](docs/user/observations-and-tests.md) add source-bound admission and an isolated workflow-to-alert simulation carrying an immutable test context. An optional [dedicated test receiver](docs/user/test-alert-delivery.md) can acknowledge labelled test alerts; normal notification delivery remains unconfigured.
 

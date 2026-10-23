@@ -2,30 +2,33 @@
 
 ## Contents
 
-1. [Install and configure](#install-and-configure)
-2. [Workflow contract](#workflow-contract)
-3. [Operate a run](#operate-a-run)
-4. [Python integration](#python-integration)
-5. [Failure and recovery](#failure-and-recovery)
-6. [Limits](#limits)
-7. [Decision rules and ready-made templates](rules.md)
-8. [Draft, test and active version lifecycle](rule-lifecycle.md)
-9. [Standalone rule service and migration](rule-service.md)
-10. [Explicit decision-to-workflow dispatch](rule-dispatch.md)
-11. [Verified observations and end-to-end test mode](observations-and-tests.md)
-12. [Dedicated test alert receivers](test-alert-delivery.md)
-13. [Independent API client and environment configuration](../../client/README.md)
-
-14. [Shared queue admission capacity](queue-capacity.md)
-15. [Configure an Auton executor](execution-adapters.md)
-16. [Local storage backup and restore](storage-backup.md)
-17. [Archive, unarchive and delete rules](rule-retirement.md)
-
-18. [Retention and archive capacity](retention.md)
+- [Install and configure](#install-and-configure)
+- [Workflow contract](#workflow-contract)
+- [Operate a run](#operate-a-run)
+- [Python integration](#python-integration)
+- [Failure and recovery](#failure-and-recovery)
+- [Limits](#limits)
+- [Storage and queue adapters](backends.md)
+- [Decision rules and ready-made templates](rules.md)
+- [Draft, test and active version lifecycle](rule-lifecycle.md)
+- [Standalone rule service](rule-service.md)
+- [Explicit decision-to-workflow dispatch](rule-dispatch.md)
+- [Verified observations and end-to-end test mode](observations-and-tests.md)
+- [Dedicated test alert receivers](test-alert-delivery.md)
+- [Independent API client](../../client/README.md)
+- [Shared queue admission capacity](queue-capacity.md)
+- [Configure an Auton executor](execution-adapters.md)
+- [Local storage backup and restore](storage-backup.md)
+- [Archive, unarchive and delete rules](rule-retirement.md)
+- [Retention and archive capacity](retention.md)
+- [Account membership and group grants](membership.md)
+- [Search admitted interventions](intervention-search.md)
+- [Notify through Alertmanager](alertmanager.md)
+- [Reconcile an uncertain outcome](reconciliation.md)
 
 ## Install and configure
 
-Install the source checkout with Python 3.11+: `python -m pip install .`.
+Follow the [source installation instructions](../../README.md#start-here) with Python 3.11+.
 SQLite is the default (`sqlite:///atropos.db`) with its integrated queue.
 See [storage and queue adapters](backends.md) to configure SQLite with Redis
 delivery, retain Redis storage explicitly, or install other adapters. No automatic
@@ -207,10 +210,3 @@ submission and a new deduplication identity.
 
 For development status and testing, see the [contributor guide](../contributor/README.md).
 
-18. [Account membership and group grants](membership.md)
-
-- [Search admitted interventions](intervention-search.md)
-
-- [Notify through Alertmanager](alertmanager.md)
-
-- [Reconcile an uncertain outcome](reconciliation.md)
