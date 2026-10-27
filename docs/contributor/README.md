@@ -30,6 +30,9 @@ the reproducible reference for optional dependencies, environment variables,
 collection guards and disposable fixtures:
 
 - Engine and client: Python 3.11/3.12, collected and executed unittest suites.
+- [Installed distributions](installed-packages.md): source archives, wheels and
+  three isolated environments on Python 3.11/3.12; package provenance, dependency
+  isolation, API authentication and SQLite backup/restore outside the checkout.
 - Auton recovery: service and integration tests with isolated Auton and
   Alertmanager fixtures, including uncertain-outcome reconciliation.
 - SQL servers: PostgreSQL, MySQL and MariaDB adapters and constraints.
