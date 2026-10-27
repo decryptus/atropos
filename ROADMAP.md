@@ -1,6 +1,6 @@
 # Atropos roadmap
 
-Updated 22 October 2026. Atropos is an experimental deterministic rule and
+Updated 27 October 2026. Atropos is an experimental deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
 
@@ -44,6 +44,20 @@ respectively, with no skips. A controlled integrated SQLite/Redis chain complete
 four hours of load, quiescence and recreation recovery with two real synthetic
 effects. These are bounded acceptance results, not an exactly-once guarantee,
 general leak-absence proof or production-capacity promise.
+
+Installed-distribution acceptance builds engine and client wheels from source
+archives on Python 3.11/3.12. It verifies installed source bytes, license and
+runtime/metadata version agreement, isolated dependencies, the actual API and
+SQLite backup/restore with retained execution pause and explicit resume. These
+are candidate artifacts, not a registry release or a stable-support commitment.
+See [package validation](docs/contributor/installed-packages.md).
+
+Atraxis's [separate-host recovery acceptance](https://github.com/decryptus/atraxis/blob/main/docs/contributing.md#recovery-on-a-separate-host)
+also exercises the installed engine with identical exported images and cold
+volumes on two disposable hosts. It retains audits, queued work, uncertainty and
+target locks without replay, and checks current reconciliation rights. It does
+not establish live host-loss recovery or the current state of a surviving real
+external recipient. Those operational milestones remain open.
 
 High availability, hot backup, external backup providers, cross-backend
 conversion and additional queue adapters remain future work. Each new adapter

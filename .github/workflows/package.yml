@@ -1,0 +1,78 @@
+name: Installed distribution acceptance
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install native dependency and build tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends libmagic1
+          python -m pip install build==1.6.1
+      - name: Build both source archives and wheels from those archives
+        run: |
+          python -m build
+          python -m build client
+      - name: Install candidate wheels in three independent environments
+        shell: bash
+        run: |
+          engine_wheels=(dist/*.whl)
+          client_wheels=(client/dist/*.whl)
+          test "${#engine_wheels[@]}" -eq 1
+          test "${#client_wheels[@]}" -eq 1
+          for role in engine client service; do
+            python -m venv "$RUNNER_TEMP/installed-$role"
+          done
+          "$RUNNER_TEMP/installed-engine/bin/python" -m pip install "${engine_wheels[0]}"
+          "$RUNNER_TEMP/installed-client/bin/python" -m pip install "${client_wheels[0]}"
+          "$RUNNER_TEMP/installed-service/bin/python" -m pip install "${engine_wheels[0]}[service]" "${client_wheels[0]}[observations]"
+          mkdir -p package-evidence
+          for role in engine client service; do
+            "$RUNNER_TEMP/installed-$role/bin/python" -m pip check
+            "$RUNNER_TEMP/installed-$role/bin/python" -m pip freeze > "package-evidence/$role-dependencies.txt"
+          done
+      - name: Collect and exercise installed packages outside the checkout
+        working-directory: ${{ runner.temp }}
+        shell: bash
+        run: |
+          for role in engine client service; do
+            interpreter="$RUNNER_TEMP/installed-$role/bin/python"
+            "$interpreter" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed "installed_tests/$role"
+            "$interpreter" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/$role" -v 2>&1 | tee "$GITHUB_WORKSPACE/package-evidence/$role-tests.log"
+          done
+      - name: Record candidate artifact hashes
+        run: |
+          python - <<'PY'
+          import hashlib, json, subprocess, sys
+          from pathlib import Path
+          paths = sorted([*Path('dist').glob('*'), *Path('client/dist').glob('*')])
+          assert len(paths) == 4
+          evidence = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), python=sys.version,
+              files={str(p): dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest(), size=p.stat().st_size) for p in paths},
+              source_archives_and_wheels=True, registry_publication=False, synthetic_only=True)
+          Path('package-evidence/manifest.json').write_text(json.dumps(evidence, indent=2) + '\n')
+          PY
+      - name: Retain build and installed acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installed-packages-${{ matrix.python }}
+          path: |
+            package-evidence/
+            dist/
+            client/dist/
+          retention-days: 14
+          if-no-files-found: error
