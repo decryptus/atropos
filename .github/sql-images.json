@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "platform": "linux/amd64",
+  "images": {
+    "postgresql": {
+      "reference": "postgres:16@sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c",
+      "linux_amd64_manifest": "sha256:b95b87e93ceb7594715d5c71fb6e09f6fc878851ab537735d617325eb9ba8b1b",
+      "linux_amd64_image_id": "sha256:74d436cb49d3398cf7b5d7b33635d43623d9e4da4b93c22db453f7d5d81181b1"
+    },
+    "mysql": {
+      "reference": "mysql:8.4@sha256:a0225d1ea6631c8bc2385dc4c2faba17bbf1834ecf369e1659a9a382bd8d5dd7",
+      "linux_amd64_manifest": "sha256:5cf1e1293ea42e077e6a22114e6773b9aae3bb8f9933a2acd5a9721518ff8f5b",
+      "linux_amd64_image_id": "sha256:d2a0d367629f5b5dcd6cdabc53fe9183a0a3c313f9bd354e368290ba6fbf6d3f"
+    },
+    "mariadb": {
+      "reference": "mariadb:11.4@sha256:d1891ede5a559f1086f55053bb8cc1569b0298338c4d72d71725a7f74f6ba620",
+      "linux_amd64_manifest": "sha256:d9fc02976678d4236145299c40dc267051681b33489c994f0ec4a097ce4a9521",
+      "linux_amd64_image_id": "sha256:1d2b32fbc13a8ed222b073036d268b669ddb1396e6b8f35b41e5b1b08ac15ea1"
+    }
+  },
+  "tls_fixture": {
+    "repository": "decryptus/sonicprobe",
+    "commit": "a1cca4624910e26669484fe6826e67837b28ff4a",
+    "path": ".github/scripts/sql-tls-fixture.sh",
+    "sha256": "919da59142d7dee125806e663edcafc4e307e3fa7c13451fa018a0a558af4f70"
+  }
+}

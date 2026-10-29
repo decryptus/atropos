@@ -40,6 +40,29 @@ collection guards and disposable fixtures:
 - SQL servers: PostgreSQL, MySQL and MariaDB adapters and constraints.
 - SQL TLS: verified TLS and negative certificate/hostname checks.
 
+The SQL server and TLS workflows share [immutable image references](../../.github/sql-images.json)
+for PostgreSQL 16, MySQL 8.4 and MariaDB 11.4 on Linux amd64. These are the
+same registry digests used by the preceding successful qualification, not an
+implicit server upgrade. Both workflows check the requested reference and actual
+image configuration ID of every running container before database tests. They
+retain `sql-images-servers` (three containers) and `sql-images-tls` (nine containers)
+for 14 days, including the source commit and lock-file hash. Image identity does
+not imply that tests passed; read the workflow conclusion and executed counts.
+
+TLS setup still comes from the pinned Sonicprobe checkout. The
+[preparation helper](../../scripts/sql-fixture-images.py) verifies the original
+script's full SHA-256 before replacing exactly its three image assignments in the
+disposable checkout. Changed upstream input fails before writing. Certificate
+generation, ports, cleanup, readiness deadlines and negative TLS cases remain
+unchanged. Updating an image requires updating the shared lock and service
+references together, then passing both workflows; updating the upstream fixture
+also requires reviewing its source and checksum. The image configuration IDs are
+specific to Linux amd64. No other architecture is qualified by these runs.
+
+This pins the SQL server images only. Runner images, installed apt/Python test
+dependencies and other integration fixtures remain separate inputs; these locks
+do not claim a completely frozen environment or byte-identical rebuilds.
+
 Keep test collection guards and report executed counts and skips. Never use a
 production endpoint by default or weaken assertions, resource limits or deadlines
 to obtain a passing result. Synthetic secrets and example domains are fixtures.

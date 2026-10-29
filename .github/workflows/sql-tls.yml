@@ -9,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
@@ -24,10 +25,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes redis-server default-libmysqlclient-dev pkg-config
           python -m pip install '.[postgresql,mysql,redis,zen,exchange]' ./client
+      - name: Pin reviewed upstream TLS fixture images
+        run: python scripts/sql-fixture-images.py pin-tls test-fixtures/sonicprobe/.github/scripts/sql-tls-fixture.sh
       - name: Start disposable TLS fixtures
         run: |
           bash test-fixtures/sonicprobe/.github/scripts/sql-tls-fixture.sh start "$RUNNER_TEMP/sql-tls-fixtures"
           echo "ATROPOS_SQL_TEST_TLS_CA=$RUNNER_TEMP/sql-tls-fixtures/ca.pem" >> "$GITHUB_ENV"
+      - name: Verify running SQL image identities
+        run: python scripts/sql-fixture-images.py record tls "$RUNNER_TEMP/sql-images-tls.json"
       - name: Prepare dedicated databases over verified TLS
         run: python scripts/prepare-sql-tls-tests.py
       - run: python scripts/check-test-collection.py sql_tests sql_tls_tests
@@ -51,3 +56,11 @@ jobs:
       - name: Stop disposable SQL fixtures
         if: always()
         run: bash test-fixtures/sonicprobe/.github/scripts/sql-tls-fixture.sh stop
+      - name: Retain SQL image identities
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-images-tls
+          path: ${{ runner.temp }}/sql-images-tls.json
+          if-no-files-found: error
+          retention-days: 14
