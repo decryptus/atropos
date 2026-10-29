@@ -8,7 +8,7 @@ jobs:
     timeout-minutes: 20
     services:
       postgresql:
-        image: postgres:16
+        image: postgres:16@sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c
         env:
           POSTGRES_DB: atropos_test
           POSTGRES_USER: anysql
@@ -18,7 +18,7 @@ jobs:
           --health-cmd "pg_isready -U anysql -d atropos_test"
           --health-interval 5s --health-timeout 5s --health-retries 30
       mysql:
-        image: mysql:8.4
+        image: mysql:8.4@sha256:a0225d1ea6631c8bc2385dc4c2faba17bbf1834ecf369e1659a9a382bd8d5dd7
         env:
           MYSQL_DATABASE: atropos_test
           MYSQL_ROOT_PASSWORD: synthetic-test-password
@@ -28,7 +28,7 @@ jobs:
           --health-cmd "mysqladmin ping -h 127.0.0.1 --silent"
           --health-interval 5s --health-timeout 5s --health-retries 30
       mariadb:
-        image: mariadb:11.4
+        image: mariadb:11.4@sha256:d1891ede5a559f1086f55053bb8cc1569b0298338c4d72d71725a7f74f6ba620
         env:
           MARIADB_DATABASE: atropos_test
           MARIADB_ROOT_PASSWORD: synthetic-test-password
@@ -40,10 +40,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Verify running SQL image identities
+        env:
+          SQL_POSTGRESQL_CONTAINER: ${{ job.services.postgresql.id }}
+          SQL_MYSQL_CONTAINER: ${{ job.services.mysql.id }}
+          SQL_MARIADB_CONTAINER: ${{ job.services.mariadb.id }}
+        run: python scripts/sql-fixture-images.py record servers "$RUNNER_TEMP/sql-images-servers.json"
       - name: Install candidate and disposable test dependencies
         run: |
           sudo apt-get update
@@ -65,3 +72,11 @@ jobs:
         env:
           ATROPOS_SQL_TEST_URL: mysql://root:synthetic-test-password@127.0.0.1:33307/atropos_test
         run: python -m unittest discover -s sql_tests -v
+      - name: Retain SQL image identities
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-images-servers
+          path: ${{ runner.temp }}/sql-images-servers.json
+          if-no-files-found: error
+          retention-days: 14
