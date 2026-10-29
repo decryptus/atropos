@@ -25,7 +25,7 @@ support. The release support matrix must distinguish implementations with contra
 tests from configurations qualified for the advertised operational use. Adding a
 new backend or queue adapter is not required to finish this baseline.
 
-## Contract baseline and open decision
+## Contract baseline and language decision
 
 | Contract | Current reference |
 | --- | --- |
@@ -37,10 +37,21 @@ new backend or queue adapter is not required to finish this baseline.
 | Persistence and delivery | [Technology-independent contracts](backend-contracts.md), [documented backend profiles](../user/backends.md) |
 | Backup and uncertainty | [Storage backup](../user/storage-backup.md), [operator reconciliation](../user/reconciliation.md) |
 
-**The final intervention-language decision is open.** The existing authoring
-model and ZEN evaluator are the tested candidate, not a final choice made by this
-document. Record an explicit decision and its supported semantics before freezing
-that contract. Do not add a second language or automatic translation implicitly.
+**1.0 language decision — 29 October 2026:** retain the existing version-1
+YAML rule authoring model, its same-schema JSON representation and ZEN 2.1.2
+for evaluation. Retain the separate version-1 bounded workflow graph for execution.
+This explicit delivery decision follows the owner's instruction to close the 1.0
+scope around implemented capabilities and proceed to a release.
+
+Rule ordering is first-match with an explicit default. Inputs remain typed,
+required and finite; conditions use the documented comparison operators and
+bounded `all`/`any`/`not`/local-check references. A decision label never executes
+an action. Workflow steps use registered actions and explicit authorized bindings.
+The [rule guide](../user/rules.md) is the semantic reference, including complexity
+limits. Native arbitrary JDM import, expressions, a second language, automatic
+translation, implicit units/time windows and embedded scripts are outside 1.0.
+The implementation is selected; a release candidate does not yet make the
+experimental API/storage formats stable or waive the remaining delivery gates.
 
 The candidate manifest must pin engine/client/Atraxis source and package versions,
 dependencies, format versions and each claimed storage/queue/transport profile.
@@ -59,8 +70,8 @@ not on the existence of a feature or a test name alone.
 | G3 — final integration and endurance | Approved source → rule → action → notification path and representative workload/history evidence | Real approved targets/destinations work within documented limits; marker isolation, failures, uncertainty and duplicate semantics hold; measurements identify their exact backend/configuration |
 | G4 — release candidate | Engine/client packages, documentation and consolidated evidence | Provenance/license/version/dependency checks and required CI pass; G1–G3 have no unresolved blocker for the claimed support matrix |
 
-The functional baseline is recorded. G1's language choice and exact candidate
-manifest are open; G2–G4 remain open operational/release gates. Keep already acquired
+The functional baseline and language choice are recorded. The exact final
+support manifest and G2–G4 remain open operational/stable-release gates. Keep already acquired
 [package evidence](installed-packages.md), backend contracts, isolated integration,
 separate-host recovery and workload evidence within their stated scope. Do not
 reset them just because the delivery plan is made explicit.
@@ -79,6 +90,24 @@ reset them just because the delivery plan is made explicit.
 - No percentage-complete estimate, release date, throughput/SLO claim or general
   leak-absence claim follows from this scope. Publishing G4 requires a separate
   release decision; no tags, registry, deployment or Read the Docs action is implied.
+
+## Candidate publication and stopping rule
+
+An explicitly labelled prerelease may be published before the operational gates
+close, provided its exact packages pass the required CI and its release notes
+list the outstanding gates. This is a distribution checkpoint, not G4 closure.
+The first supported deployment target is Linux amd64, Python 3.11/3.12 packages,
+and Python 3.12 operator Compose with SQLite storage and the integrated queue.
+Redis and SQL implementations remain available with their existing contract-test
+evidence; they do not enlarge the initial operational qualification matrix.
+No new backend, language or feature is required to reach this target.
+
+The remaining stable-release work is finite: qualify the reference site's fresh
+installation and full recovery on another host, qualify approved real execution
+and notification destinations, fill only workload/history gaps relevant to that
+profile, then package the matched final sources and publish with those limits.
+Missing site/recipient choices must be reported as concrete prerequisites, not
+replaced by repeated synthetic checks or an ever-expanding feature list.
 
 ## Deferred beyond this baseline
 
