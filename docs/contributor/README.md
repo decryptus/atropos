@@ -9,6 +9,8 @@ Read [AGENTS.md](../../AGENTS.md) for engineering constraints, the
 [user guide](../user/README.md) for supported configuration and operation.
 Storage and delivery contracts are described in [backend contracts](backend-contracts.md);
 signed authorization exchange is described in [exchange](exchange.md).
+The [1.0 delivery baseline](v1-delivery.md) fixes included/deferred functionality,
+the four exit gates and when existing evidence needs to be repeated.
 
 ## Development and validation
 

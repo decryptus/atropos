@@ -1,6 +1,6 @@
 # Atropos roadmap
 
-Updated 27 October 2026. Atropos is an experimental deterministic rule and
+Updated 29 October 2026. Atropos is an experimental deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
 
@@ -24,18 +24,27 @@ The runtime works without Atraxis and without an AI provider. Decision evaluatio
 does not imply action execution. Adapter acceptance does not prove downstream
 notification delivery.
 
-## Next milestones
+## Four steps to the first stable release
 
-1. Complete operational qualification of installed sources, approved execution
-   targets and notification destinations.
-2. Exercise host-loss recovery and complete operator backup, credential renewal
-   and recovery guidance.
-3. Extend endurance and retained-history measurements across representative
-   workloads and supported storage backends.
-4. Finalize the supported rule/workflow contract and intervention-language choice.
-   The existing ZEN integration is a tested candidate.
-5. Complete packaging and distribution and qualify a stable release candidate
-   with explicit supported configurations and limitations.
+The [1.0 scope and delivery gates](docs/contributor/v1-delivery.md) fix the baseline
+to implemented capabilities, define concrete exit criteria and separate later
+features. Existing qualification is reused within its proven scope.
+
+1. **G1 — scope and contracts:** the functional baseline is documented; record the
+   explicit intervention-language decision and exact candidate support manifest.
+   ZEN remains the tested candidate, not an implicitly finalized language choice.
+2. **G2 — installation and complete recovery:** qualify a fresh operational site
+   and recovery on another host, with credentials, state, audit, queued/uncertain
+   work and explicit authority-checked resume.
+3. **G3 — final integration and endurance:** qualify installed sources, approved
+   execution targets, actual notification destinations and representative retained
+   histories/workloads for the configurations claimed as supported.
+4. **G4 — release candidate:** finalize engine/client packages, documentation and
+   evidence after the preceding gates pass. Publication is a separate action.
+
+G2–G4 remain open. New features do not automatically join this baseline; relevant
+defects are corrected without reopening unrelated completed checks. No new campaign
+or external notification is authorized merely by this roadmap.
 
 ## Qualification and limits
 
