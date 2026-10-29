@@ -31,8 +31,8 @@ to implemented capabilities, define concrete exit criteria and separate later
 features. Existing qualification is reused within its proven scope.
 
 1. **G1 — scope and contracts:** the functional baseline is documented; record the
-   explicit intervention-language decision and exact candidate support manifest.
-   ZEN remains the tested candidate, not an implicitly finalized language choice.
+   exact candidate support manifest. The version-1 YAML rule/workflow models
+   and ZEN 2.1.2 are explicitly selected for 1.0; no second language is required.
 2. **G2 — installation and complete recovery:** qualify a fresh operational site
    and recovery on another host, with credentials, state, audit, queued/uncertain
    work and explicit authority-checked resume.
@@ -42,7 +42,10 @@ features. Existing qualification is reused within its proven scope.
 4. **G4 — release candidate:** finalize engine/client packages, documentation and
    evidence after the preceding gates pass. Publication is a separate action.
 
-G2–G4 remain open. New features do not automatically join this baseline; relevant
+The initial operational target is Linux amd64 with SQLite and the integrated
+queue; existing SQL/Redis adapters retain their documented qualification limits.
+An explicitly labelled prerelease may precede operational gate closure.
+G2–G4 remain open for the stable release. New features do not automatically join this baseline; relevant
 defects are corrected without reopening unrelated completed checks. No new campaign
 or external notification is authorized merely by this roadmap.
 
