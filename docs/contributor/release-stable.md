@@ -1,5 +1,15 @@
 # Reviewed stable publication
 
+Atropos engine and client [1.0.0](https://github.com/decryptus/atropos/releases/tag/v1.0.0)
+were published on 31 October 2026 by
+[run 41232395425](https://github.com/decryptus/atropos/actions/runs/41232395425).
+The six required workflows passed on `19f4e5f508ee4316216f8934d948aa502b8b03af`;
+merge `613856430e87cd5abac0ea346d8d60a63b73cc57` has the identical tree.
+The six downloaded attachments pass their checksums, all 63 runtime module hashes
+match the qualification manifest, and both published wheels report 1.0.0 when
+installed outside the checkout. No registry publication occurred. This tag is
+complete and must not be overwritten or republished.
+
 The publisher creates a GitHub release for the bounded [1.0 matrix](../user/v1.0.md).
 It does not publish to a registry or deploy services. Review private operational
 evidence and its public hash-only manifest before merging final sources.

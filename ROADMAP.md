@@ -45,14 +45,18 @@ features. Existing qualification is reused within its proven scope.
 The initial operational target is Linux amd64 with SQLite and the integrated
 queue; existing SQL/Redis adapters retain their documented qualification limits.
 An explicitly labelled prerelease may precede operational gate closure.
-G1–G3 are closed for the [bounded reference](docs/user/v1.0.md). G4 requires
-final package CI and explicit publication. New features do not automatically join this baseline; relevant
+G1–G4 are closed for the [bounded reference](docs/user/v1.0.md).
+The [engine and client 1.0.0 release](https://github.com/decryptus/atropos/releases/tag/v1.0.0)
+is published after all six required workflows passed on the exact source.
+The downloaded archives, module hashes and installed package identities are verified;
+registry publication and real external recipients remain separate.
+New features do not automatically join this baseline; relevant
 defects are corrected without reopening unrelated completed checks. No new campaign
 or external notification is authorized merely by this roadmap.
 
 ## Qualification and limits
 
-Core and service suites at the current source checkpoint passed 224 and 94 tests
+Core and service suites at the stable source checkpoint passed 228 and 94 tests
 respectively, with no skips. A controlled integrated SQLite/Redis chain completed
 four hours of load, quiescence and recreation recovery with two real synthetic
 effects. These are bounded acceptance results, not an exactly-once guarantee,
