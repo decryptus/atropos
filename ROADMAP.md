@@ -1,6 +1,6 @@
 # Atropos roadmap
 
-Updated 29 October 2026. Atropos is an experimental deterministic rule and
+Updated 31 October 2026. Atropos 1.0 is a deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
 
@@ -45,7 +45,8 @@ features. Existing qualification is reused within its proven scope.
 The initial operational target is Linux amd64 with SQLite and the integrated
 queue; existing SQL/Redis adapters retain their documented qualification limits.
 An explicitly labelled prerelease may precede operational gate closure.
-G2–G4 remain open for the stable release. New features do not automatically join this baseline; relevant
+G1–G3 are closed for the [bounded reference](docs/user/v1.0.md). G4 requires
+final package CI and explicit publication. New features do not automatically join this baseline; relevant
 defects are corrected without reopening unrelated completed checks. No new campaign
 or external notification is authorized merely by this roadmap.
 
@@ -60,8 +61,8 @@ general leak-absence proof or production-capacity promise.
 Installed-distribution acceptance builds engine and client wheels from source
 archives on Python 3.11/3.12. It verifies installed source bytes, license and
 runtime/metadata version agreement, isolated dependencies, the actual API and
-SQLite backup/restore with retained execution pause and explicit resume. These
-are candidate artifacts, not a registry release or a stable-support commitment.
+SQLite backup/restore with retained execution pause and explicit resume. The stable publisher reuses these exact artifacts after the reviewed operational
+gates close; publication to a package registry remains a separate operation.
 See [package validation](docs/contributor/installed-packages.md).
 
 Atraxis's [separate-host recovery acceptance](https://github.com/decryptus/atraxis/blob/main/docs/contributing.md#recovery-on-a-separate-host)
@@ -69,11 +70,13 @@ also exercises the installed engine with identical exported images and cold
 volumes on two disposable hosts. It retains audits, queued work, uncertainty and
 target locks without replay, and checks current reconciliation rights. It does
 not establish live host-loss recovery or the current state of a surviving real
-external recipient. Those operational milestones remain open.
+external recipient. A separate operational recovery and approved diagnostic/local-receiver path
+qualify the bounded 1.0 reference; they do not qualify arbitrary surviving effects
+or external email/chat recipients.
 
 High availability, hot backup, external backup providers, cross-backend
 conversion and additional queue adapters remain future work. Each new adapter
 requires its own durability, authorization and recovery evidence.
 
-Current configuration, API and storage formats are experimental. Unsupported
+The support matrix names the qualified versioned contracts. Unsupported
 formats are rejected explicitly, without implicit migration or data deletion.

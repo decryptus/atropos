@@ -12,6 +12,9 @@ signed authorization exchange is described in [exchange](exchange.md).
 The [1.0 delivery baseline](v1-delivery.md) fixes included/deferred functionality,
 the four exit gates and when existing evidence needs to be repeated.
 
+The [stable publication procedure](release-stable.md) verifies exact tested archives
+and the reviewed operational qualification manifest.
+
 ## Development and validation
 
 Use Python 3.11 or 3.12 and disposable synthetic infrastructure. Install the
@@ -67,7 +70,7 @@ Keep test collection guards and report executed counts and skips. Never use a
 production endpoint by default or weaken assertions, resource limits or deadlines
 to obtain a passing result. Synthetic secrets and example domains are fixtures.
 
-Current behavior remains experimental. In particular, signed admission is not
+The [1.0 support matrix](../user/v1.0.md) bounds the stable reference. In particular, signed admission is not
 execution authority, an uncertain external outcome is not a confirmed failure,
 and durable deduplication does not prove exactly-once external effects. Changes
 must preserve current authorization checks and explicit dispatch/activation.

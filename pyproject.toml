@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "atraxis-atropos"
-version = "0.1.0a21"
-description = "Durable intervention workflow prototype for the Atraxis ecosystem"
+version = "1.0.0"
+description = "Durable rule and workflow engine for the Atraxis ecosystem"
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"]
@@ -17,7 +17,7 @@ postgresql = ["psycopg2-binary>=2.9,<3"]
 mysql = ["mysqlclient>=2.2.4,<3"]
 redis = ["redis>=5,<6"]
 auton = ["auton==1.3.1"]
-service = ["httpdis==0.6.34", "atropos-client[observations]==0.1.0a10", "zen-engine==2.1.2"]
+service = ["httpdis==0.6.34", "atropos-client[observations]==1.0.0", "zen-engine==2.1.2"]
 zen = ["zen-engine==2.1.2"]
 exchange = ["PyJWT[crypto]==2.15.1"]
 

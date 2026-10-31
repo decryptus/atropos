@@ -1,0 +1,3 @@
+include README.md LICENSE
+recursive-include atropos_client *.py
+global-exclude __pycache__ *.py[cod]
