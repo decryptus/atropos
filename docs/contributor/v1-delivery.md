@@ -70,10 +70,14 @@ not on the existence of a feature or a test name alone.
 | G3 — final integration and endurance | Approved source → rule → action → notification path and representative workload/history evidence | Real approved targets/destinations work within documented limits; marker isolation, failures, uncertainty and duplicate semantics hold; measurements identify their exact backend/configuration |
 | G4 — release candidate | Engine/client packages, documentation and consolidated evidence | Provenance/license/version/dependency checks and required CI pass; G1–G3 have no unresolved blocker for the claimed support matrix |
 
-G1–G3 are closed for the [bounded 1.0 reference](../user/v1.0.md). The reviewed
+G1–G4 are closed for the [bounded 1.0 reference](../user/v1.0.md). The reviewed
 manifest is `docs/releases/1.0.0-qualification.json`; it binds the engine/client
-runtime identity and hashes of retained private operational records. G4 requires
-final required CI and the separate [stable publication](release-stable.md). Keep already acquired
+runtime identity and hashes of retained private operational records. All six required
+workflows passed on `19f4e5f508ee4316216f8934d948aa502b8b03af`; the engine and client
+[1.0.0 release](https://github.com/decryptus/atropos/releases/tag/v1.0.0) is published.
+Downloaded archives and installed package identities were verified. The
+[stable publication procedure](release-stable.md) must not be rerun for this tag.
+Keep already acquired
 [package evidence](installed-packages.md), backend contracts, isolated integration,
 separate-host recovery and workload evidence within their stated scope. Do not
 reset them just because the delivery plan is made explicit.
