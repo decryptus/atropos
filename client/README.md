@@ -89,8 +89,8 @@ A missing simulator sets `test_supported` to false without executing anything.
 No matching access returns an empty list, including inaccessible revisions.
 
 Listing does not reserve permission or enqueue work. Submission and workers
-continue to enforce current rights. Use client 0.1.0a5 with engine 0.1.0a10;
-older engines reject the new read-only method. Atraxis forwards it through its
+continue to enforce current rights. Use the matched 1.0 engine/client packages;
+unsupported older services may reject this method. Atraxis forwards it through its
 independently authenticated gateway, preserving engine-owned authorization.
 
 ## Admission capacity refusal
@@ -109,7 +109,7 @@ outcomes. Atropos remains responsible for scoped permission and lifecycle checks
 Client 0.1.0a8 adds the read-only `search_interventions(name, **filters)` command.
 See the [intervention search contract](../docs/user/intervention-search.md) for
 scope, filters, pagination, permission checks and availability limits. Install the
-matching client and engine sources; this is not a public package release.
+matching client and engine sources; the [1.0 support matrix](../docs/user/v1.0.md) describes the published pair.
 
 ## Atraxis organization selection
 
@@ -117,6 +117,13 @@ Client 0.1.0a10 accepts `RuleClient(..., service="atraxis", organization="operat
 This selects an existing authenticated gateway mapping through
 `X-Atraxis-Organization`; it does not set a subject or grant permissions. Direct
 Atropos connections reject this option and keep their credential-bound identity.
+
+## Version 1.0
+
+The versioned features above remain available in client 1.0.0. Functional modules
+match 0.1.0a10; only the runtime/package version changes. Use separate consumer
+and engine environments and retain a consumer application's explicit dependency
+pins. See the [1.0 installation and support guide](../docs/user/v1.0.md).
 
 ## License
 

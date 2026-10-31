@@ -2,11 +2,11 @@
 
 Rules, workflows and orchestration for the Atraxis ecosystem.
 
-**Experimental prototype, licensed under GNU GPL version 3.** Atropos advances small, versioned workflows
+**Atropos 1.0, licensed under GNU GPL version 3.** Atropos advances small, versioned workflows
 through persisted steps using configurable storage and delivery adapters. It complements the supervision and
 local interventions already available in monit-docker.
 
-This first version provides a Python service API and explicit CLI commands for
+Atropos provides a Python service API and explicit CLI commands for
 validation, structural planning, submission, workers, inspection and resolution
 of uncertain runs. The plain workflow CLI includes harmless demonstration actions. The guarded rule
 service can register [approved Auton executors](docs/user/execution-adapters.md)
@@ -17,12 +17,13 @@ from its private engine profile. Trusted applications may also register actions.
 
 ## Start here
 
-Requires Python 3.11+. SQLite is the default storage; PostgreSQL, MySQL/MariaDB and Redis are optional.
+The [1.0 support matrix](docs/user/v1.0.md) covers Linux amd64 and Python 3.11/3.12. SQLite is the default storage; PostgreSQL, MySQL/MariaDB and Redis are optional.
 Install the source checkout in a dedicated virtual environment:
 
 ```sh
 git clone https://github.com/decryptus/atropos.git
 cd atropos
+git checkout v1.0.0
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install .
@@ -47,7 +48,7 @@ an action with external effects.
 - [User guide](docs/user/README.md): configuration, workflow format, Python API,
   operation and failure semantics.
 - [Contributor guide](docs/contributor/README.md): architecture, tests and known
-  prototype limits.
+  qualification boundaries.
 - [YAML rules, ZEN tests and versioning](docs/user/rules.md).
 - [Account membership and group grants](docs/user/membership.md).
 - [Rule archive and draft deletion](docs/user/rule-retirement.md).
@@ -56,9 +57,9 @@ an action with external effects.
 - [Brand assets](assets/brand/README.md).
 
 Atraxis owns optional AI-assisted authoring and routing. Atropos has no AI runtime
-dependency. Optional ZEN support now evaluates a limited experimental YAML rule model.
-The final intervention language remains undecided. This source publication is an
-experimental development version, not a production-readiness or package-release claim.
+dependency. The 1.0 language is the documented version-1 YAML rule model with ZEN 2.1.2,
+and a separate bounded workflow graph. See the support matrix for operational
+qualification and explicit limits.
 
 ## Rule service
 
@@ -66,7 +67,7 @@ Atropos owns the rule lifecycle and persistence. Run its [standalone rule API](d
 
 Authorized operators can now [preview and explicitly dispatch an approved workflow](docs/user/rule-dispatch.md), with current rights checked before each step. The default service registers demonstration actions; explicitly configured approved executors require their own trusted profile and permissions.
 
-[Verified observations and administrator tests](docs/user/observations-and-tests.md) add source-bound admission and an isolated workflow-to-alert simulation carrying an immutable test context. An optional [dedicated test receiver](docs/user/test-alert-delivery.md) can acknowledge labelled test alerts; normal notification delivery remains unconfigured.
+[Verified observations and administrator tests](docs/user/observations-and-tests.md) add source-bound admission and an isolated workflow-to-alert simulation carrying an immutable test context. An optional [dedicated test receiver](docs/user/test-alert-delivery.md) can acknowledge labelled test alerts; real destinations require their own explicit configuration and delivery checks.
 
 Inspect existing archives offline with the [retention report](docs/user/retention.md);
 no live data is pruned or expired.

@@ -1,5 +1,8 @@
 # Atropos user guide
 
+Start with the [1.0 supported reference](v1.0.md) for versions, installation,
+qualification and upgrade limits.
+
 ## Contents
 
 - [Install and configure](#install-and-configure)
@@ -79,7 +82,7 @@ prove every runtime input/result reference will exist.
 The CLI registers `core.echo` (returns its inputs) and `core.fail` (confirmed
 demonstration failure). It does not load arbitrary plugins from a workflow.
 Decision engines can later be bound as registered actions returning a decision;
-optional ZEN integration is now available as an experimental pilot. See
+the 1.0 reference uses the bounded YAML rule model with ZEN 2.1.2. See
 [YAML rules and versioning](rules.md) for the separate decision-rule format.
 
 ## Operate a run

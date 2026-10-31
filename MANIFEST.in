@@ -1,0 +1,14 @@
+include AGENTS.md ROADMAP.md
+recursive-include docs *.md *.json
+recursive-include examples *.yml *.yaml *.json
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include service_tests *.py
+recursive-include integration_tests *.py
+recursive-include installed_tests *.py
+recursive-include release_tests *.py
+recursive-include client_tests *.py
+recursive-include client *.py *.toml *.md LICENSE
+prune client/dist
+prune client/build
+global-exclude __pycache__ *.py[cod]

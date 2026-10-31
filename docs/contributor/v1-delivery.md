@@ -2,7 +2,7 @@
 
 Scope baseline: 29 October 2026. This plan bounds Atropos 1.0 and its independent
 API client; it does not change package versions, publish a release or declare the
-current experimental formats stable. [Atraxis's matching scope](https://github.com/decryptus/atraxis/blob/main/docs/v1-delivery.md)
+support matrix beyond its recorded evidence. [Atraxis's matching scope](https://github.com/decryptus/atraxis/blob/main/docs/v1-delivery.md)
 owns the operator interfaces, inventory and account administration.
 
 ## Included functionality
@@ -50,8 +50,8 @@ an action. Workflow steps use registered actions and explicit authorized binding
 The [rule guide](../user/rules.md) is the semantic reference, including complexity
 limits. Native arbitrary JDM import, expressions, a second language, automatic
 translation, implicit units/time windows and embedded scripts are outside 1.0.
-The implementation is selected; a release candidate does not yet make the
-experimental API/storage formats stable or waive the remaining delivery gates.
+The [1.0 support matrix](../user/v1.0.md) identifies the qualified versioned
+contracts. Unsupported formats remain explicitly rejected.
 
 The candidate manifest must pin engine/client/Atraxis source and package versions,
 dependencies, format versions and each claimed storage/queue/transport profile.
@@ -70,8 +70,10 @@ not on the existence of a feature or a test name alone.
 | G3 — final integration and endurance | Approved source → rule → action → notification path and representative workload/history evidence | Real approved targets/destinations work within documented limits; marker isolation, failures, uncertainty and duplicate semantics hold; measurements identify their exact backend/configuration |
 | G4 — release candidate | Engine/client packages, documentation and consolidated evidence | Provenance/license/version/dependency checks and required CI pass; G1–G3 have no unresolved blocker for the claimed support matrix |
 
-The functional baseline and language choice are recorded. The exact final
-support manifest and G2–G4 remain open operational/stable-release gates. Keep already acquired
+G1–G3 are closed for the [bounded 1.0 reference](../user/v1.0.md). The reviewed
+manifest is `docs/releases/1.0.0-qualification.json`; it binds the engine/client
+runtime identity and hashes of retained private operational records. G4 requires
+final required CI and the separate [stable publication](release-stable.md). Keep already acquired
 [package evidence](installed-packages.md), backend contracts, isolated integration,
 separate-host recovery and workload evidence within their stated scope. Do not
 reset them just because the delivery plan is made explicit.
@@ -102,10 +104,10 @@ Redis and SQL implementations remain available with their existing contract-test
 evidence; they do not enlarge the initial operational qualification matrix.
 No new backend, language or feature is required to reach this target.
 
-The remaining stable-release work is finite: qualify the reference site's fresh
-installation and full recovery on another host, qualify approved real execution
-and notification destinations, fill only workload/history gaps relevant to that
-profile, then package the matched final sources and publish with those limits.
+The reference installation, coordinated recovery on another host and approved
+HTTPS diagnostic with actual local receiver receipt are qualified. The retained
+workload keeps its original synthetic SQLite/Redis scope. Final engine/client
+packages are published only after their exact sources pass the required checks.
 Missing site/recipient choices must be reported as concrete prerequisites, not
 replaced by repeated synthetic checks or an ever-expanding feature list.
 

@@ -22,6 +22,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends libmagic1
           python -m pip install build==1.6.1
+      - name: Verify stable publication guards
+        run: |
+          python scripts/check-test-collection.py release_tests
+          python -m unittest discover -s release_tests -v
       - name: Build both source archives and wheels from those archives
         run: |
           python -m build
@@ -60,7 +64,10 @@ jobs:
           from pathlib import Path
           paths = sorted([*Path('dist').glob('*'), *Path('client/dist').glob('*')])
           assert len(paths) == 4
-          evidence = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), python=sys.version,
+          evidence = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              source_tree=subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+              packages={'atraxis-atropos': __import__('tomllib').loads(Path('pyproject.toml').read_text())['project']['version'],
+                        'atropos-client': __import__('tomllib').loads(Path('client/pyproject.toml').read_text())['project']['version']}, python=sys.version,
               files={str(p): dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest(), size=p.stat().st_size) for p in paths},
               source_archives_and_wheels=True, registry_publication=False, synthetic_only=True)
           Path('package-evidence/manifest.json').write_text(json.dumps(evidence, indent=2) + '\n')
