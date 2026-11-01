@@ -9,16 +9,16 @@ submit workflows automatically.
 
 ## Install and start
 
-From the Atropos source checkout, install the small client package first and then
-the service extra. These are local source installations, not registry releases:
+In a dedicated virtual environment with the system libmagic library installed,
+install the published service extra. It includes the matching independent client:
 
 ```sh
-python -m pip install ./client
-python -m pip install '.[service,redis]'
+python -m pip install 'atraxis-atropos[service]==1.0.0'
+# Add [service,redis] instead when selecting a Redis storage or queue backend.
 atropos rules-serve --config /private/atropos-service.yml --port 8082
 ```
 
-Copy `examples/rule-service.yml`, replace its synthetic inventory, grants, storage
+Copy [the example service profile](../../examples/rule-service.yml), replace its synthetic inventory, grants, storage
 URL and token digest, and protect it with mode 0600 in an administrator-owned
 directory. [Storage and queue adapters](backends.md) can be selected independently.
 SQLite and Redis storage are supplied; the old `redis_url` spelling is rejected.
