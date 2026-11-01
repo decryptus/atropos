@@ -31,14 +31,14 @@ qualification and upgrade limits.
 
 ## Install and configure
 
-Follow the [source installation instructions](../../README.md#start-here) with Python 3.11+.
+Follow the [installation instructions](../../README.md#start-here) with Python 3.11+.
 SQLite is the default (`sqlite:///atropos.db`) with its integrated queue.
 See [storage and queue adapters](backends.md) to configure SQLite with Redis
 delivery, retain Redis storage explicitly, or install other adapters. No automatic
 data migration occurs when changing backends. Generic role parameters replace
 all former product-prefixed configuration names.
 
-For Redis in either role, install `python -m pip install '.[redis]'`.
+For Redis in either role, install `python -m pip install 'atraxis-atropos[redis]==1.0.0'`.
 The [Redis example](../../examples/redis.conf) uses AOF and no eviction. Provision
 a persistent volume, size memory and monitor disk capacity. `appendfsync everysec`
 can lose approximately the last second of writes after a crash; choose the fsync

@@ -3,7 +3,16 @@
 Independently installable GPLv3 client for the Atropos rule API. It contains
 wire signatures, strict configuration and bounded HTTPS transport. It has no
 Redis, ZEN, HTTPdis, DWho or `atropos` engine dependency. Requires Python 3.11+
-and PyYAML. Install from this directory with `python -m pip install .`.
+and PyYAML. The stable package is available on [PyPI](https://pypi.org/project/atropos-client/1.0.0/):
+
+```sh
+python -m pip install 'atropos-client==1.0.0'
+```
+
+Use a separate application environment. For signed observation envelopes, install
+`atropos-client[observations]==1.0.0`. Existing consumers retain their own explicit
+dependency pins; see [version matching](../docs/user/v1.0.md).
+Source installation from this directory remains available with `python -m pip install .`.
 
 ```python
 from atropos_client.client import RuleClient
