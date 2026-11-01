@@ -62,9 +62,26 @@ jobs:
           path: pypi-upload/
           if-no-files-found: error
           retention-days: 7
-  publish:
+  publish-client:
     needs: prepare
-    if: needs.prepare.outputs.client != '0' || needs.prepare.outputs.engine != '0'
+    if: needs.prepare.outputs.client != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: pypi-client
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-pypi-uploads
+          path: pypi-upload
+      - name: Publish the independent client first
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086
+        with:
+          packages-dir: pypi-upload/client/
+  publish-engine:
+    needs: [prepare, publish-client]
+    if: always() && needs.prepare.result == 'success' && (needs.publish-client.result == 'success' || needs.publish-client.result == 'skipped') && needs.prepare.outputs.engine != '0'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: pypi
@@ -75,19 +92,13 @@ jobs:
         with:
           name: verified-pypi-uploads
           path: pypi-upload
-      - name: Publish the independent client first
-        if: needs.prepare.outputs.client != '0'
-        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086
-        with:
-          packages-dir: pypi-upload/client/
       - name: Publish the engine
-        if: needs.prepare.outputs.engine != '0'
         uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086
         with:
           packages-dir: pypi-upload/engine/
   verify:
-    needs: [prepare, publish]
-    if: always() && needs.prepare.result == 'success' && (needs.publish.result == 'success' || needs.publish.result == 'skipped')
+    needs: [prepare, publish-client, publish-engine]
+    if: always() && needs.prepare.result == 'success' && (needs.publish-client.result == 'success' || needs.publish-client.result == 'skipped') && (needs.publish-engine.result == 'success' || needs.publish-engine.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

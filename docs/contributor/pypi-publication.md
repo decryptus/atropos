@@ -20,11 +20,19 @@ publish under an unreviewed name if either name is unavailable.
 | GitHub owner | `decryptus` | `decryptus` |
 | Repository | `atropos` | `atropos` |
 | Workflow filename | `publish-pypi.yml` | `publish-pypi.yml` |
-| Environment | `pypi` | `pypi` |
+| Environment | `pypi` | `pypi-client` |
 
-The job uses GitHub environment `pypi` and short-lived OIDC credentials. No PyPI
+Pending publishers for different project names must have distinct identities.
+Using the same owner, repository, workflow and environment for both projects
+causes PyPI to reject the second registration. Keep the engine registration in
+`pypi`; register the client with `pypi-client`. If an old client pending entry
+uses `pypi`, remove that pending entry and recreate it with `pypi-client`.
+This concerns pending publisher configuration, not deleting a PyPI project.
+
+Separate publishing jobs use these two GitHub environments and short-lived
+OIDC credentials. No PyPI
 password or long-lived token belongs in Git, chat, logs or a workflow input.
-The publisher job has `id-token: write`; validation jobs do not. The upload
+The publisher jobs have `id-token: write`; validation jobs do not. The upload
 action is pinned to an inspected PyPA revision. See the official
 [setup](https://docs.pypi.org/trusted-publishers/adding-a-publisher/) and
 [new-project instructions](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/).
@@ -42,7 +50,9 @@ action is pinned to an inspected PyPA revision. See the official
    validation, re-downloads the stable assets, and checks both PyPI versions.
    It stages only missing files. Any existing file with a different digest,
    unexpected filename or yanked state blocks the operation.
-4. The separate OIDC job publishes the client before the engine. These are two
+4. The separate OIDC jobs publish the client before the engine. A failed or
+   cancelled client job blocks the engine; an already verified client allows
+   the engine-only resume. These are two
    package uploads, not an atomic registry transaction. If interrupted, inspect
    the outcome. An explicit rerun may complete only the remaining files after
    all already published files are verified identical; no blind skip-existing
