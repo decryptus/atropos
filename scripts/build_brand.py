@@ -11,7 +11,7 @@ def render(svg, out, width, height=None):
 
 def main():
     for sub in ['png','favicon']:(ROOT/sub).mkdir(exist_ok=True)
-    for name in ['logo','logo-horizontal','logo-for-light','symbol','wordmark','logo-black','symbol-black','logo-white','symbol-white','logo-on-black','symbol-on-black']:
+    for name in ['logo','logo-horizontal','logo-horizontal-for-light','logo-for-light','symbol','wordmark','logo-black','symbol-black','logo-white','symbol-white','logo-on-black','symbol-on-black']:
         for size in ([256,512,1024,2048] if name in ['logo','symbol'] else [512,1024]):
             render(ROOT/'svg'/f'atropos-{name}.svg',ROOT/'png'/f'atropos-{name}-{size}.png',size)
     for size in [16,32,48,64,128,256]:

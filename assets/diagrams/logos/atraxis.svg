@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760" role="img" aria-labelledby="title"><title id="title">Atraxis</title><g transform="translate(40 82)"><g transform="translate(-280 -220)"><title xmlns="http://www.w3.org/2000/svg">Atraxis crystalline eye and three-node orbit</title>
+  <defs xmlns="http://www.w3.org/2000/svg">
+    <linearGradient id="orbit" x1="480" y1="270" x2="936" y2="690" gradientUnits="userSpaceOnUse"><stop stop-color="#529bf5" /><stop offset=".56" stop-color="#58d0ec" /><stop offset="1" stop-color="#67a5f7" /></linearGradient>
+    <radialGradient id="iris" cx=".3" cy=".3" r=".85"><stop stop-color="#249cf5" /><stop offset=".65" stop-color="#147ce4" /><stop offset="1" stop-color="#1453b9" /></radialGradient>
+    <linearGradient id="node" x2=".7" y2="1"><stop stop-color="#6ab4ff" /><stop offset="1" stop-color="#5294f0" /></linearGradient>
+    <clipPath id="ring" clipPathUnits="userSpaceOnUse"><path d="M297 545L625 318L926 545L628 772Z" /></clipPath>
+  </defs>
+  <path xmlns="http://www.w3.org/2000/svg" d="M478 315C550 255 649 236 734 260C834 285 898 371 927 481C973 659 862 777 663 796C837 758 941 658 925 528C914 396 839 301 734 273C647 246 556 269 478 315Z" fill="url(#orbit)" />
+  <g xmlns="http://www.w3.org/2000/svg" fill="url(#node)"><circle cx="734" cy="269" r="30" /><circle cx="890" cy="423" r="32" /><circle cx="906" cy="662" r="32" /></g>
+  <g xmlns="http://www.w3.org/2000/svg" clip-path="url(#ring)">
+    <path d="M297 545L625 318L926 545L628 772Z" fill="#176fe1" />
+    <path d="M297 545L438 418L463 479Z" fill="#1454c2" />
+    <path d="M297 545L389 455L365 511Z" fill="#0950d9" />
+    <path d="M389 455L438 418L416 462Z" fill="#216dce" />
+    <path d="M438 418L527 386L484 436Z" fill="#4e92df" />
+    <path d="M438 418L551 357L527 386Z" fill="#a3ceef" />
+    <path d="M551 357L625 318L625 400L527 386Z" fill="#0c50c6" />
+    <path d="M625 318L663 369L625 400Z" fill="#69b3f8" />
+    <path d="M625 318L688 340L663 369Z" fill="#d3f1fc" />
+    <path d="M688 340L725 379L663 369Z" fill="#b4def5" />
+    <path d="M663 369L725 379L752 436L625 400Z" fill="#4dabe6" />
+    <path d="M688 340L762 392L725 379Z" fill="#95c8e9" />
+    <path d="M725 379L762 392L794 479L752 436Z" fill="#d0ecfb" />
+    <path d="M762 392L829 462L794 479Z" fill="#195bb2" />
+    <path d="M829 462L926 545L794 479Z" fill="#1357c6" />
+    <path d="M297 545L430 507L401 545Z" fill="#d7effd" />
+    <path d="M430 507L478 476L447 518L401 545Z" fill="#90c5fa" />
+    <path d="M794 479L926 545L841 545Z" fill="#a7d6fc" />
+    <path d="M297 545L401 545L437 649Z" fill="#124fae" />
+    <path d="M297 545L383 616L437 649Z" fill="#063993" />
+    <path d="M401 545L450 590L437 649Z" fill="#6ac5f4" />
+    <path d="M450 590L480 625L500 659L437 649Z" fill="#4cacde" />
+    <path d="M383 616L437 649L471 707Z" fill="#104fba" />
+    <path d="M437 649L500 659L628 772L471 707Z" fill="#0e3696" />
+    <path d="M500 659L625 696L628 772Z" fill="#1c67da" />
+    <path d="M625 696L701 672L628 772Z" fill="#96dcf7" />
+    <path d="M625 696L662 710L628 772Z" fill="#72c9f2" />
+    <path d="M701 672L768 690L628 772Z" fill="#3f9cd9" />
+    <path d="M701 672L785 620L768 690Z" fill="#71c9f5" />
+    <path d="M785 620L841 545L823 595L768 690Z" fill="#3d9ee6" />
+    <path d="M841 545L926 545L876 589L823 595Z" fill="#215cca" />
+    <path d="M823 595L876 589L768 690Z" fill="#0f399c" />
+  </g>
+  <path xmlns="http://www.w3.org/2000/svg" d="M401 545C477 457 548 407 625 400C704 405 776 465 841 545C774 628 704 683 625 696C544 682 471 625 401 545Z" fill="#031027" />
+  <circle xmlns="http://www.w3.org/2000/svg" cx="625" cy="545" r="123" fill="url(#iris)" />
+  <g xmlns="http://www.w3.org/2000/svg" opacity=".6">
+    <path d="M625 545L609 423A123 123 0 0 1 673 432L650 489Z" fill="#1264cf" />
+    <path d="M625 545L673 432A123 123 0 0 1 738 496L689 505Z" fill="#104bb7" />
+    <path d="M625 545L738 496A123 123 0 0 1 743 580L690 569Z" fill="#1267d8" />
+    <path d="M625 545L743 580A123 123 0 0 1 699 643L665 595Z" fill="#218bea" />
+    <path d="M625 545L699 643A123 123 0 0 1 610 667L619 604Z" fill="#1d7be1" />
+    <path d="M625 545L610 667A123 123 0 0 1 538 631L573 581Z" fill="#0758c2" />
+    <path d="M625 545L538 631A123 123 0 0 1 503 559L566 542Z" fill="#1378e1" />
+    <path d="M625 545L503 559A123 123 0 0 1 545 451L579 493Z" fill="#359aef" />
+    <path d="M625 545L545 451A123 123 0 0 1 609 423L618 486Z" fill="#1584e5" />
+  </g>
+  <circle xmlns="http://www.w3.org/2000/svg" cx="625" cy="545" r="58" fill="#031027" />
+  <circle xmlns="http://www.w3.org/2000/svg" cx="587" cy="521" r="14" fill="#ddf6ff" />
+</g></g></svg>

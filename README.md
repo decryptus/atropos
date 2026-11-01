@@ -1,6 +1,9 @@
 # Atropos
 
-![Atropos](assets/brand/svg/atropos-logo-horizontal.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/svg/atropos-logo-horizontal.svg">
+  <img src="assets/brand/svg/atropos-logo-horizontal-for-light.svg" alt="Atropos" width="640">
+</picture>
 
 **A standalone rule and workflow engine: test a decision, explicitly authorize a
 workflow, and track every step through completion or an uncertain outcome.**
@@ -35,20 +38,25 @@ separate operations.
 
 ## How the components fit together
 
-```mermaid
-flowchart TD
-    UI["Atraxis or another application"] --> Client["atropos-client"]
-    Client -->|"Authenticated API"| Engine["Atropos rule and workflow service"]
-    Engine --> Store["Rules, runs and audit storage"]
-    Engine -->|"Approved jobs"| Auton["Auton"]
-    Engine -->|"Configured notifications"| Alerts["Alertmanager"]
-    CLI["Local workflow CLI"] --> Store
-```
+![Atropos architecture: the engine, local terminal and database are inside Atropos; Atraxis, Auton and Alertmanager are optional external software.](assets/diagrams/atropos-architecture.svg)
 
-The local workflow CLI is for trusted operators and uses its own registered demo
-actions. The authenticated rule service and its guarded workers provide scoped
-rule-driven dispatch. The diagram shows configured relationships, not an automatic
-observation-to-intervention pipeline.
+**Inside Atropos**, the engine and local terminal read and write the configured
+persistent storage. The database cylinder holds rule versions and tests, workflow
+runs and results, and audit history. SQLite is the default: a local file, with no
+separate database server required. Other storage adapters are documented in the
+[backend guide](docs/user/backends.md). The frame indicates component ownership,
+not a requirement to run everything in one process, container or host.
+
+The **Atropos terminal** is the local `atropos` command for trusted operators:
+validate, submit, run and inspect workflows. Its built-in actions are registered
+demo actions. The authenticated rule service and its guarded workers provide
+scoped rule-driven dispatch. The terminal and service share data only when
+configured to use the same storage and namespace.
+
+Coloured logos identify optional external software: **Atraxis** connects through
+`atropos-client` and the authenticated API; **Auton** executes authorized jobs;
+**Alertmanager** routes configured notifications. Saving, testing or activating a
+rule does not automatically launch a workflow.
 
 | Software | Role | Required? |
 | --- | --- | --- |
