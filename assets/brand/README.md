@@ -5,7 +5,8 @@ Editable vector edition of the approved gold, ivory and pale-blue woven emblem, 
 ## Files
 
 - `svg/atropos-logo.svg`: main stacked logo, transparent; intended for dark surfaces.
-- `svg/atropos-logo-horizontal.svg`: horizontal lockup, transparent.
+- `svg/atropos-logo-horizontal.svg`: horizontal lockup, transparent, for dark surfaces.
+- `svg/atropos-logo-horizontal-for-light.svg`: same horizontal artwork with dark final letters for light surfaces.
 - `svg/atropos-symbol.svg`: emblem, transparent square canvas.
 - `svg/atropos-wordmark.svg`: custom lettering converted to paths; no font dependency.
 - `svg/atropos-logo-for-light.svg`: dark final letters for light surfaces.
