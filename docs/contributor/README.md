@@ -77,6 +77,10 @@ execution authority, an uncertain external outcome is not a confirmed failure,
 and durable deduplication does not prove exactly-once external effects. Changes
 must preserve current authorization checks and explicit dispatch/activation.
 
+## Container images
+
+See [container build, acceptance and Docker Hub publication](docker.md).
+
 ## License
 
 Project-owned code and documentation are licensed under GNU GPL version 3 only
