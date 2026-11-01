@@ -1,0 +1,54 @@
+name: PyPI promotion validation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify promotion guards
+        run: |
+          python scripts/check-test-collection.py release_tests
+          python -m unittest discover -s release_tests -v
+      - name: Retrieve the existing stable release without rebuilding
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v1.0.0 --repo decryptus/atropos --dir pypi-source
+          gh api repos/decryptus/atropos/releases/tags/v1.0.0 > pypi-release.json
+          gh api repos/decryptus/atropos/git/ref/tags/v1.0.0 > pypi-tag.json
+          python scripts/prepare-pypi.py
+      - name: Check upload metadata
+        run: |
+          python -m pip install twine==6.2.0
+          python -m twine check pypi-source/*.whl pypi-source/*.tar.gz
+      - name: Verify exact wheels install in independent environments
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libmagic1
+          for role in engine client service; do
+            python -m venv "$RUNNER_TEMP/pypi-$role"
+          done
+          "$RUNNER_TEMP/pypi-engine/bin/pip" install pypi-source/atraxis_atropos-1.0.0-py3-none-any.whl
+          "$RUNNER_TEMP/pypi-client/bin/pip" install pypi-source/atropos_client-1.0.0-py3-none-any.whl
+          "$RUNNER_TEMP/pypi-service/bin/pip" install 'pypi-source/atropos_client-1.0.0-py3-none-any.whl[observations]' 'pypi-source/atraxis_atropos-1.0.0-py3-none-any.whl[service]'
+          cd "$RUNNER_TEMP"
+          for role in engine client service; do
+            "$RUNNER_TEMP/pypi-$role/bin/python" -m pip check
+            "$RUNNER_TEMP/pypi-$role/bin/python" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed "installed_tests/$role"
+            "$RUNNER_TEMP/pypi-$role/bin/python" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/$role" -v
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypi-promotion-plan
+          path: pypi-plan.json
+          if-no-files-found: error
+          retention-days: 14

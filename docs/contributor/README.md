@@ -14,6 +14,8 @@ the four exit gates and when existing evidence needs to be repeated.
 
 The [stable publication procedure](release-stable.md) verifies exact tested archives
 and the reviewed operational qualification manifest.
+The separate [PyPI promotion procedure](pypi-publication.md) transfers those
+same archives after account configuration and an explicit workflow dispatch.
 
 ## Development and validation
 
