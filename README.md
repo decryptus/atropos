@@ -71,6 +71,11 @@ rule does not automatically launch a workflow.
 Prometheus and Covenant are not required to run Atropos. Monit-Docker retains its
 own monitoring, local actions and protections when used alongside Atropos.
 
+## Container installation
+
+Use the [Docker guide](docs/user/docker.md) for the Linux amd64 image, persistent
+state, TLS placement and the optional worker using the same image.
+
 ## Start here
 
 The [supported reference](docs/user/v1.0.md) covers Linux amd64 and Python 3.11/3.12.

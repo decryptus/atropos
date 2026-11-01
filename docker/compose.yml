@@ -1,0 +1,30 @@
+name: atropos
+x-runtime: &runtime
+  image: decryptus/atropos:${ATROPOS_VERSION:-1.0.0}
+  user: "10001:10001"
+  network_mode: host
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 128
+  mem_limit: 512m
+  cpus: 2
+  tmpfs: ["/tmp:rw,nosuid,nodev,size=128m,uid=10001,gid=10001,mode=0700"]
+  restart: "no"
+  stop_grace_period: 30s
+  volumes:
+    - type: bind
+      source: ${ATROPOS_CONFIG_DIR:?Set ATROPOS_CONFIG_DIR to a prepared private directory}
+      target: /etc/atropos
+      read_only: true
+      bind: {create_host_path: false}
+    - state:/var/lib/atropos
+services:
+  engine:
+    <<: *runtime
+  worker:
+    <<: *runtime
+    profiles: [execution]
+    command: [rules-worker, --config, /etc/atropos/engine.yml]
+volumes:
+  state:

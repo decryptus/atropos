@@ -12,3 +12,6 @@ recursive-include client *.py *.toml *.md LICENSE
 prune client/dist
 prune client/build
 global-exclude __pycache__ *.py[cod]
+
+include Dockerfile .dockerignore
+graft docker

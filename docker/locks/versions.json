@@ -1,0 +1,45 @@
+{
+  "base_image": "python:3.12.16-slim-trixie@sha256:aa943ce411423c7582288f18707ff66eddcbaeb510502d747a72aeb34f30d159",
+  "build": {
+    "packaging": "26.3",
+    "pip": "25.0.1",
+    "setuptools": "84.2.1",
+    "wheel": "0.46.3"
+  },
+  "debian_snapshot": "20261029T000000Z",
+  "profiles": {
+    "engine": {
+      "PyJWT": "2.15.1",
+      "PyYAML": "6.0.3",
+      "Unidecode": "1.2.0",
+      "atraxis-atropos": "1.0.0",
+      "atropos-client": "1.0.0",
+      "auton": "1.3.1",
+      "certifi": "2026.10.23",
+      "cffi": "2.1.1",
+      "charset-normalizer": "3.5.2",
+      "cryptography": "50.0.2",
+      "httpdis": "0.6.34",
+      "idna": "3.20",
+      "pip": "25.0.1",
+      "psutil": "7.2.2",
+      "pyOpenSSL": "26.4.0",
+      "pycparser": "3.12",
+      "pycurl": "7.49.0",
+      "python-dotenv": "1.2.4",
+      "python-magic": "0.4.27",
+      "redis": "5.3.1",
+      "regex": "2026.9.29",
+      "requests": "2.34.2",
+      "semantic-version": "2.10.0",
+      "setuptools": "84.2.1",
+      "six": "1.17.0",
+      "sonicprobe": "0.3.62",
+      "typing_extensions": "4.16.0",
+      "urllib3": "2.8.0",
+      "zen-engine": "2.1.2"
+    }
+  },
+  "python": "3.12.16",
+  "schema": 1
+}

@@ -14,6 +14,7 @@ qualification and upgrade limits.
 - [Storage and queue adapters](backends.md)
 - [Decision rules and ready-made templates](rules.md)
 - [Draft, test and active version lifecycle](rule-lifecycle.md)
+- [Docker image and persistent service](docker.md)
 - [Standalone rule service](rule-service.md)
 - [Explicit decision-to-workflow dispatch](rule-dispatch.md)
 - [Verified observations and end-to-end test mode](observations-and-tests.md)
