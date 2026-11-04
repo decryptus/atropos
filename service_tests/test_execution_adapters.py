@@ -54,6 +54,36 @@ class ExecutionAdapterTests(unittest.TestCase):
         with self.assertRaises(ExecutionDenied):
             asyncio.run(action.simulate({}, Context('run', 'step', 'org/container/web', 1, 5, True, 'test-id')))
 
+    def test_bearer_credentials_exclusive_private_and_reloaded(self):
+        import requests
+        from atropos.actions import Action
+        self.spec.pop('username')
+        self.spec.pop('password_file')
+        for fields in ({}, {'token_file': 'token', 'username': 'operator'},
+                       {'token_file': 'token', 'password_file': 'password'}):
+            with self.assertRaises(ValueError):
+                validate_adapters({'ops.approved': dict(self.spec, **fields)}, self.resources)
+        self.spec['token_file'] = 'token'
+        validate_adapters(self.document['execution_adapters'], self.resources)
+        action = configured_actions(self.document['execution_adapters'], self.path, self.loader)['ops.approved']
+        context = Context('run', 'step', self.spec['target'], 1, 5)
+        token = self.root / 'token'
+        async def execute(params, context):
+            return {}
+        with patch('atropos.auton_adapter.auton_action', return_value=Action(execute)) as submit:
+            token.write_text('a' * 43)
+            token.chmod(0o644)
+            with self.assertRaises(ExecutionDenied):
+                asyncio.run(action.execute({}, context))
+            submit.assert_not_called()
+            token.chmod(0o600)
+            for value in ('a' * 43, 'b' * 43):
+                token.write_text(value)
+                asyncio.run(action.execute({}, context))
+                auth = submit.call_args.kwargs['auth']
+                req = requests.Request('GET', self.spec['origin'], auth=auth).prepare()
+                self.assertEqual(req.headers['Authorization'], 'Bearer ' + value)
+
     def test_reviewed_binding_pins_exact_adapter_configuration(self):
         actions = configured_actions(self.document['execution_adapters'], self.path, self.loader)
         binding = dict(organization='org', rule='cpu', revision='a'*32, result={'decision':'yes','matched_rule':'hot'},
