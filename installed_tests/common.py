@@ -36,11 +36,12 @@ def verify_package(case, module_name, distribution_name, source):
     def files(directory):
         return {str(p.relative_to(directory)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in directory.rglob('*.py')}
-    case.assertEqual(files(package), files(ROOT / source))
+    source_root = Path(os.environ.get('ATROPOS_ACCEPTANCE_SOURCE', ROOT))
+    case.assertEqual(files(package), files(source_root / source))
     licenses = [p for p in distribution.files if str(p).endswith('.dist-info/licenses/LICENSE')
         or str(p).endswith('.dist-info/LICENSE')]
     case.assertEqual(len(licenses), 1)
-    case.assertEqual(distribution.locate_file(licenses[0]).read_bytes(), (ROOT / 'LICENSE').read_bytes())
+    case.assertEqual(distribution.locate_file(licenses[0]).read_bytes(), (source_root / 'LICENSE').read_bytes())
     for name in ('atraxis',):
         case.assertIsNone(importlib.util.find_spec(name))
 
