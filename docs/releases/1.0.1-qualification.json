@@ -7,8 +7,8 @@
   },
   "gates": {
     "G1": "closed",
-    "G2": "review pending",
-    "G3": "open"
+    "G2": "closed",
+    "G3": "closed"
   },
   "support_matrix": "docs/user/v1.0.md",
   "baseline_qualification": "docs/releases/1.0.0-qualification.json",
@@ -78,6 +78,16 @@
     "client/atropos_client/protocol.py": "650bee5702b5aaa8795e0d6b2c926a60da4626c6db97d774684f48dba7364c8d",
     "client/atropos_client/worker.py": "3566f4a873580405935777fdb6cffc51a8a597b0840bae3a18b0ef1587f4b2bb"
   },
-  "evidence_sha256": {},
-  "external_recipients_qualified": false
+  "evidence_sha256": {
+    "cold": "2361822fe4f0650296e9191c72ea0215dfbe4262b9afcf0795751f3e00995200",
+    "reference": "843282e6626264c0a595eb31f2482a416eccb60651715057140bbb8e216f3404",
+    "endurance": "b85ecf38bbea62c765e277fe1d9b1f80bc1b0d257285110fb71929dd8b22c892"
+  },
+  "external_recipients_qualified": false,
+  "candidate_tested_source": "9738d99d56c2da353ed64c9e371660d497d321f3",
+  "qualification_scope": {
+    "cold": "The original distinct-host recovery reference is retained. No storage schema, backup or resume change in this patch. Candidate installed recovery and authorization were exercised again in CI.",
+    "endurance": "Historical four-hour SQLite/Redis workload at its original 1.0.0 inputs.",
+    "reference": "Candidate engine on the existing pilot. One scoped HTTPS diagnostic. The dedicated Alertmanager delivered firing and resolution to the local webhook."
+  }
 }
