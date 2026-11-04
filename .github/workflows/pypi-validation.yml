@@ -26,11 +26,21 @@ jobs:
           gh api repos/decryptus/atropos/releases/tags/v1.0.0 > pypi-release.json
           gh api repos/decryptus/atropos/git/ref/tags/v1.0.0 > pypi-tag.json
           python scripts/prepare-pypi.py
+      - name: Identify verified release source
+        id: stable
+        run: echo "commit=$(jq -er '.release_commit' scripts/pypi-1.0.0.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.stable.outputs.commit }}
+          path: stable-source
+          persist-credentials: false
       - name: Check upload metadata
         run: |
           python -m pip install twine==6.2.0
           python -m twine check pypi-source/*.whl pypi-source/*.tar.gz
       - name: Verify exact wheels install in independent environments
+        env:
+          ATROPOS_ACCEPTANCE_SOURCE: ${{ github.workspace }}/stable-source
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends libmagic1

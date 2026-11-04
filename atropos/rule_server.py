@@ -116,7 +116,8 @@ class RuleHandler(HttpReqHandler):
 
 
 def build_context(path, port=DEFAULT_PORT):
-    from atropos.storage_contract import Conflict, QueueFull
+    from .rule_lifecycle import RuleScopeDenied
+    from .storage_contract import Conflict, QueueFull, ResourceNotFound
     path = Path(path).absolute()
     document, _ = load_service_config(path)
     from .backend_registry import destination as backend_destination
@@ -142,14 +143,14 @@ def build_context(path, port=DEFAULT_PORT):
             if len(body.encode()) > MAX_RESPONSE_BYTES:
                 raise RuntimeError('response_limit')
             return HttpResponse(code=200, data=body, headers=HEADERS.copy())
+        except (RuleScopeDenied, ResourceNotFound):
+            code, error = 404, 'rule_not_found'
         except PermissionError:
             code, error = 403, 'rule_access_denied'
         except QueueFull:
             code, error = 429, 'rule_queue_full'
         except Conflict:
             code, error = 409, 'rule_conflict'
-        except KeyError:
-            code, error = 404, 'rule_not_found'
         except (ValueError, TypeError, AttributeError, RecursionError):
             code, error = 400, 'invalid_rule_request'
         except Exception:

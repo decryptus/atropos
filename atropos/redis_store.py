@@ -2,7 +2,7 @@
 import hashlib
 import json
 import uuid
-from .storage_contract import Claim, Conflict, QueueFull
+from .storage_contract import Claim, Conflict, QueueFull, ResourceNotFound
 
 from redis.exceptions import ResponseError, WatchError
 
@@ -95,7 +95,7 @@ class RedisStore:
     def get(self, run_id):
         raw = self.client.get(self.key(run_id))
         if raw is None:
-            raise KeyError(run_id)
+            raise ResourceNotFound(run_id)
         return json.loads(raw)
 
     def enqueue(self, workflow, inputs, target, deduplication_key=None, attribution=None, *, execution=None, conditions=None, audit=None, consume=(), not_after=None, test_context=None):
@@ -284,7 +284,7 @@ class RedisStore:
                 pipe.watch(key, lease, audit[0], self.quarantine, self.dead)
                 raw = pipe.get(key)
                 if raw is None:
-                    raise KeyError(run_id)
+                    raise ResourceNotFound(run_id)
                 state = json.loads(raw)
                 target = self.target_key(state['target'])
                 pipe.watch(target)

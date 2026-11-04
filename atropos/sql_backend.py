@@ -8,7 +8,7 @@ import uuid
 from .admission import admission_state
 from .definitions import encode, name
 from .maintenance import PAUSE_SUFFIX
-from .storage_contract import Claim, Conflict, QueueFull
+from .storage_contract import Claim, Conflict, QueueFull, ResourceNotFound
 
 TERMINAL = frozenset({'succeeded', 'failed', 'cancelled'})
 MAX_STATE_BYTES = 1048576
@@ -94,7 +94,7 @@ class SQLWorkflowStore:
     def get(self, run_id):
         with self.client._lock:
             row = self._row(run_id)
-            if row is None: raise KeyError(run_id)
+            if row is None: raise ResourceNotFound(run_id)
             return json.loads(row[0])
 
     def _put(self, state, delivery, token=None, lease_until=None):
@@ -247,7 +247,7 @@ class SQLWorkflowStore:
         with self.client.transaction():
             row = self._row(run_id)
             if not row:
-                raise KeyError(run_id)
+                raise ResourceNotFound(run_id)
             state = json.loads(row[0])
             target = self.target_key(state['target'])
             if row[3] is not None and row[3] > self.now():
@@ -264,7 +264,7 @@ class SQLWorkflowStore:
         if outcome not in ('succeeded','failed'): raise ValueError('invalid_resolution')
         with self.client.transaction():
             row=self._row(run_id)
-            if not row: raise KeyError(run_id)
+            if not row: raise ResourceNotFound(run_id)
             state=json.loads(row[0]);target=self.target_key(state['target'])
             if state['status']!='uncertain' or row[3] and row[3]>self.now(): raise Conflict('run_not_reconcilable')
             if self.client.get(target)!=run_id: raise Conflict('target_ownership_changed')

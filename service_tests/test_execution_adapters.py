@@ -5,7 +5,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from atropos.actions import ActionFailed, Context
+from atropos.actions import Context
+from atropos.worker import ExecutionDenied
 from atropos.dispatch import ApprovedBindings
 from atropos.execution_adapters import adapter_revision, configured_actions, validate_adapters
 
@@ -39,18 +40,18 @@ class ExecutionAdapterTests(unittest.TestCase):
             result = asyncio.run(action.simulate({}, context))
         self.assertEqual(result['test_context'], {'test': True, 'id': 'test-id'})
         self.assertEqual(result['effects'], 'none')
-        with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
+        with self.assertRaises(ExecutionDenied): asyncio.run(action.execute({}, context))
 
     def test_changed_adapter_or_missing_secret_fails_before_submission(self):
         action = configured_actions(self.document['execution_adapters'], self.path, self.loader)['ops.approved']
         context = Context('run', 'step', 'org/container/web', 1, 5)
-        with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
+        with self.assertRaises(ExecutionDenied): asyncio.run(action.execute({}, context))
         password = self.root / 'password'; password.write_text('synthetic-secret'); password.chmod(0o644)
-        with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
+        with self.assertRaises(ExecutionDenied): asyncio.run(action.execute({}, context))
         password.chmod(0o600)
         self.document['execution_adapters']['ops.approved']['endpoint'] = 'other'
-        with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
-        with self.assertRaises(ActionFailed):
+        with self.assertRaises(ExecutionDenied): asyncio.run(action.execute({}, context))
+        with self.assertRaises(ExecutionDenied):
             asyncio.run(action.simulate({}, Context('run', 'step', 'org/container/web', 1, 5, True, 'test-id')))
 
     def test_reviewed_binding_pins_exact_adapter_configuration(self):
@@ -79,3 +80,37 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(captured['auth'],('operator','synthetic-secret'))
         self.assertEqual(captured['transport'],{'verify':str(ca)})
         self.assertFalse(captured['client_factory'].keywords['session'].trust_env)
+
+    def test_worker_cancels_refused_execution_before_error_branch(self):
+        from atropos.backend_registry import open_storage
+        from atropos.service import WorkflowService
+        from atropos.worker import Worker
+
+        backend = open_storage(dict(backend='sqlite', url='sqlite:///' + str(self.root / 'state.db')))
+        self.addCleanup(backend.close)
+        store = backend.workflow_store('engine')
+        actions = configured_actions(self.document['execution_adapters'], self.path, self.loader)
+        workflow = dict(version=1, name='review', start='run',
+                        steps={'run': dict(action='ops.approved', on_error='fallback'),
+                               'fallback': dict(action='core.echo')})
+        service = WorkflowService(store, actions)
+        worker = Worker(store, actions, authorizer=lambda state: True, require_authorization=True)
+        for reason, target in [('target mismatch', 'org/container/other'),
+                               ('missing password', self.spec['target']),
+                               ('removed adapter', self.spec['target'])]:
+            with self.subTest(reason=reason):
+                password = self.root / 'password'
+                if reason != 'missing password':
+                    password.write_text('synthetic-secret')
+                    password.chmod(0o600)
+                else:
+                    password.unlink()
+                if reason == 'removed adapter':
+                    self.document['execution_adapters'].clear()
+                run = service.submit(workflow, {}, target)
+                with patch('atropos.auton_adapter.auton_action') as submit:
+                    asyncio.run(worker.run_once(0))
+                    submit.assert_not_called()
+                state = store.get(run['id'])
+                self.assertEqual(state['status'], 'cancelled')
+                self.assertEqual(state['attempts'], {'run': 1})

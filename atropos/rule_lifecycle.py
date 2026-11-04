@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 from .authorization import AccessPolicy, RULE_KINDS, SCOPE_KINDS, identifier
 from .definitions import encode, name
-from .storage_contract import Conflict
+from .storage_contract import Conflict, ResourceNotFound
 from .rule_model import RuleError, dump_rules, parse_rules, validate_rules
 from .zen_rules import COMPILER_VERSION, ZenRules
 
@@ -49,6 +49,10 @@ class Principal:
         identifier(self.organization)
 
 
+class RuleScopeDenied(PermissionError):
+    """A stored rule is outside the caller's authorized scope."""
+
+
 class RuleLifecycle:
     def __init__(self, repository, state_store, policy_loader):
         self.repository = repository
@@ -63,7 +67,7 @@ class RuleLifecycle:
             raise PermissionError('policy_unavailable')
         return policy
 
-    def _authorize(self, policy, actor, context, operation, provider=None):
+    def _authorize(self, policy, actor, context, operation, provider=None, *, stored=False):
         if (not isinstance(context, dict) or set(context) != CONTEXT_FIELDS
                 or type(context['version']) is not int or context['version'] != 1
                 or context['rule_kind'] not in RULE_KINDS
@@ -75,6 +79,8 @@ class RuleLifecycle:
             raise ValueError('invalid_rule_context')
         if not policy.allows(actor.subject, actor.organization, context['rule_kind'], operation,
                              targets, provider=provider):
+            if stored:
+                raise RuleScopeDenied('rule_access_denied')
             raise PermissionError('rule_access_denied')
 
     def _context(self, policy, actor, rule_kind, selections):
@@ -104,7 +110,7 @@ class RuleLifecycle:
 
     def _get(self, policy, actor, rule_name, revision, operation):
         record = self.repository.get(rule_name, revision)
-        self._authorize(policy, actor, record.get('context'), operation)
+        self._authorize(policy, actor, record.get('context'), operation, stored=True)
         return record
 
     def save_draft(self, actor, document, *, rule_kind, selections, expected_revision, message=''):
@@ -124,10 +130,13 @@ class RuleLifecycle:
 
     def draft(self, actor, rule_name):
         policy = self._policy(actor)
+        return self._authorize_head(policy, actor, rule_name, 'read')
+
+    def _authorize_head(self, policy, actor, rule_name, operation):
         revision = self.repository.head(rule_name)
         if revision is None:
-            raise KeyError('rule_not_found')
-        return self._get(policy, actor, rule_name, revision, 'read')
+            raise ResourceNotFound('rule_not_found')
+        return self._get(policy, actor, rule_name, revision, operation)
 
     def export_yaml(self, actor, rule_name, revision):
         policy = self._policy(actor)
@@ -157,9 +166,9 @@ class RuleLifecycle:
         return result
 
     def test(self, actor, rule_name, revision, cases):
-        self.repository.require_available(rule_name)
         policy = self._policy(actor)
         record = self._get(policy, actor, rule_name, revision, 'test')
+        self.repository.require_available(rule_name)
         # Copy before evaluation so caller mutation cannot change evidence.
         cases = json.loads(encode(cases, MAX_CASE_BYTES))
         if not isinstance(cases, list) or not 1 <= len(cases) <= MAX_CASES:
@@ -204,10 +213,7 @@ class RuleLifecycle:
         if state.get('last_revision'):
             self._get(policy, actor, rule_name, state['last_revision'], 'read')
         else:
-            head = self.repository.head(rule_name)
-            if head is None:
-                raise KeyError('rule_not_found')
-            self._get(policy, actor, rule_name, head, 'read')
+            self._authorize_head(policy, actor, rule_name, 'read')
         return state
 
     def activate(self, actor, rule_name, revision, *, test_id, expected_generation):
@@ -224,8 +230,6 @@ class RuleLifecycle:
         if expected_generation is not None:
             _revision(expected_generation)
         state = self.store.state(rule_name)
-        if state['generation'] != expected_generation:
-            raise Conflict('active_generation_changed')
         policy = self._policy(actor)
         current = state['revision']
         old_revision = state.get('last_revision')
@@ -233,15 +237,20 @@ class RuleLifecycle:
             self._get(policy, actor, rule_name, old_revision, operation)
             if operation == 'rollback':
                 self._get(policy, actor, rule_name, old_revision, 'activate')
+        if operation == 'deactivate' and old_revision is None:
+            self._authorize_head(policy, actor, rule_name, operation)
+        if operation != 'deactivate':
+            record = self._get(policy, actor, rule_name, revision, operation)
+            if operation == 'rollback':
+                self._authorize(policy, actor, record['context'], 'activate', stored=True)
+        if state['generation'] != expected_generation:
+            raise Conflict('active_generation_changed')
         if operation == 'deactivate':
             if current is None:
                 raise Conflict('rule_not_active')
         else:
-            record = self._get(policy, actor, rule_name, revision, operation)
-            if operation == 'rollback':
-                self._authorize(policy, actor, record['context'], 'activate')
-                if not self.store.was_active(rule_name, revision):
-                    raise ValueError('revision_was_never_active')
+            if operation == 'rollback' and not self.store.was_active(rule_name, revision):
+                raise ValueError('revision_was_never_active')
             if self.store.latest_test(rule_name, revision) != test_id:
                 raise ValueError('latest_test_required')
             report = self._report(rule_name, test_id)
@@ -276,6 +285,10 @@ class RuleLifecycle:
         policy = self._policy(actor)
         state = self.store.state(rule_name)
         if state['revision'] is None:
+            if state.get('last_revision'):
+                self._get(policy, actor, rule_name, state['last_revision'], 'evaluate')
+            else:
+                self._authorize_head(policy, actor, rule_name, 'evaluate')
             raise Conflict('rule_not_active')
         record = self._get(policy, actor, rule_name, state['revision'], 'evaluate')
         if not isinstance(target, (list, tuple)) or list(target) not in record['context']['targets']:
@@ -293,7 +306,7 @@ class RuleLifecycle:
         value = self.repository.availability(rule_name)
         if value['status'] == 'deleted':
             for context in value['contexts'].values():
-                self._authorize(policy, actor, context, 'read')
+                self._authorize(policy, actor, context, 'read', stored=True)
         else:
             self.draft(actor, rule_name)
         return dict({k: v for k, v in value.items() if k != 'contexts'}, name=rule_name)
@@ -316,12 +329,12 @@ class RuleLifecycle:
         while True:
             rows = self.repository.history(rule_name, offset, 100)
             for record in rows:
-                self._authorize(policy, actor, record.get('context'), operation)
+                self._authorize(policy, actor, record.get('context'), operation, stored=True)
                 contexts[record['revision']] = record['context']
             offset += len(rows)
             if offset > MAX_RETIREMENT_REVISIONS: raise Conflict('rule_retirement_limit_exceeded')
             if len(rows) < 100: break
-        if not contexts: raise KeyError('rule_not_found')
+        if not contexts: raise ResourceNotFound('rule_not_found')
         return self.store.retire(rule_name, operation=operation, actor=actor,
                                  expected_revision=revision, expected_generation=generation,
                                  contexts=contexts)

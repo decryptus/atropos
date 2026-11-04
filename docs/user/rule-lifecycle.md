@@ -111,6 +111,17 @@ this lifecycle does not dispatch jobs in the first place.
 
 ## Scopes and permissions
 
+The HTTP commands for reading a draft or revision return the same 404 response
+for a missing rule and a rule outside the caller’s scope. Activation, rollback
+and deactivation check the relevant scopes before reporting a stale generation.
+A caller who can read the draft may therefore receive 404 when activation also
+requires permission on the previously active revision.
+
+Rule names are unique within an organization. A caller allowed to create rules
+can receive 409 when a chosen name is already reserved, including by a rule in
+another scope. This reveals that the name is taken. It grants no access to the
+rule or its contents.
+
 Selections may be servers, containers, server groups or container groups. A
 server selection picks that server; a server-group selection resolves member
 servers. To target containers, select containers or container groups explicitly.

@@ -10,6 +10,7 @@ from atropos_client.files import read_private
 from .actions import Action, ActionFailed, builtin_actions
 from .authorization import identifier
 from .definitions import name
+from .worker import ExecutionDenied
 
 MAX_ADAPTERS = 64
 MAX_PASSWORD_BYTES = 4096
@@ -81,17 +82,19 @@ def configured_action(action_name, spec, config_path, configuration_loader):
     revision = adapter_revision(spec)
 
     def unchanged():
-        document, _ = configuration_loader()
+        try:
+            document, _ = configuration_loader()
+        except Exception:
+            raise ExecutionDenied('execution_adapter_unavailable') from None
         if document.get('execution_adapters', {}).get(action_name) != spec:
-            raise ActionFailed('execution_adapter_changed')
+            raise ExecutionDenied('execution_adapter_changed')
 
     async def execute(params, context):
         # This check also covers the gap between worker authorization and dispatch.
         if context.test_mode or context.target != spec['target']:
-            raise ActionFailed('invalid_execution_context')
-        session = None
+            raise ExecutionDenied('invalid_execution_context')
+        unchanged()
         try:
-            unchanged()
             password = read_private(local_file(config_path, spec['password_file']), MAX_PASSWORD_BYTES).decode().rstrip('\r\n')
             if not password or any(ord(c) < 32 or ord(c) == 127 for c in password):
                 raise ValueError('invalid_execution_credentials')
@@ -100,6 +103,11 @@ def configured_action(action_name, spec, config_path, configuration_loader):
                 ca = local_file(config_path, spec['ca_file'])
                 read_private(ca, MAX_CA_BYTES)
                 transport = {'verify': str(ca)}
+        except (OSError, ValueError):
+            raise ExecutionDenied('invalid_execution_credentials_or_ca') from None
+
+        session = None
+        try:
             from .auton_adapter import auton_action
             import requests
             from auton_client.execution import ExecutionClient
@@ -108,19 +116,19 @@ def configured_action(action_name, spec, config_path, configuration_loader):
             adapter = auton_action(spec['target'], [spec['origin']], spec['endpoint'],
                 auth=(spec['username'], password), transport=transport,
                 client_factory=partial(ExecutionClient, session=session))
-            unchanged()
         except Exception:
             if session is not None:
                 session.close()
             raise ActionFailed('execution_adapter_unavailable') from None
         try:
+            unchanged()
             return await adapter.execute(params, context)
         finally:
             session.close()
 
     async def simulate(params, context):
         if not context.test_mode or not context.test_id or context.target != spec['target']:
-            raise ActionFailed('invalid_test_context')
+            raise ExecutionDenied('invalid_test_context')
         unchanged()
         return {'simulated': True, 'executor': 'auton', 'effects': 'none',
                 'target': context.target, 'endpoint': spec['endpoint'],
