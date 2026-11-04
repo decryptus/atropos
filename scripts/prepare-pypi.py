@@ -1,4 +1,4 @@
-"""Promote the exact 1.0.0 GitHub assets; never rebuild or overwrite a file."""
+"""Promote the exact 1.0.1 GitHub assets; never rebuild or overwrite a file."""
 import argparse
 import email.parser
 import hashlib
@@ -11,7 +11,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 
-MANIFEST = Path(__file__).with_name('pypi-1.0.0.json')
+MANIFEST = Path(__file__).with_name('pypi-1.0.1.json')
 LIMIT = 10 * 1024 * 1024
 
 
@@ -133,7 +133,7 @@ def main():
              json.loads(Path('pypi-tag.json').read_bytes()))
     documents = {role: registry(project, manifest['version']) for role, project in manifest['packages'].items()}
     missing = stage(args.source, args.destination, manifest, documents)
-    result = dict(version=manifest['version'], source='GitHub release v1.0.0', rebuilt=False,
+    result = dict(version=manifest['version'], source='GitHub release v1.0.1', rebuilt=False,
                   pending_uploads=missing, registry_complete=not any(missing.values()))
     Path('pypi-plan.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, sort_keys=True))

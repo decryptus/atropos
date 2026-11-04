@@ -10,6 +10,8 @@ match the qualification manifest, and both published wheels report 1.0.0 when
 installed outside the checkout. No registry publication occurred. This tag is
 complete and must not be overwritten or republished.
 
+The [1.0.1 release](https://github.com/decryptus/atropos/releases/tag/v1.0.1) includes the [updated operational qualification](../releases/1.0.1-qualification.json). Both the 1.0.0 and 1.0.1 tags are immutable.
+
 The publisher creates a GitHub release for the bounded [1.0 matrix](../user/v1.0.md).
 It does not publish to a registry or deploy services. Review private operational
 evidence and its public hash-only manifest before merging final sources.
