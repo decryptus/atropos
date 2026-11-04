@@ -9,7 +9,7 @@ from atropos.dispatch import ApprovedBindings, DecisionDispatcher, digest
 from atropos.redis_store import RedisStore
 from atropos.service import WorkflowService
 from atropos.test_execution import RuleTestRunner, TestRunAuthorizer, test_namespace
-from atropos.worker import Worker
+from atropos.worker import ExecutionDenied, Worker
 import test_dispatch as setup_helpers
 
 
@@ -110,10 +110,9 @@ class EndToEndTestModeTests(unittest.TestCase):
 
     def test_auton_rejects_test_context_before_creating_service(self):
         from atropos.auton_adapter import auton_action
-        from atropos.actions import ActionFailed
         factory=Mock();action=auton_action('target',['https://example.invalid'],'noop',service_factory=factory)
         context=Context('run','step','target',1,10,True,'test-id')
-        with self.assertRaises(ActionFailed):asyncio.run(action.execute({},context))
+        with self.assertRaises(ExecutionDenied):asyncio.run(action.execute({},context))
         factory.assert_not_called()
 
     def test_simulated_failure_follows_error_branch_and_keeps_test_alert_marker(self):
