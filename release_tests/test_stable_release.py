@@ -24,17 +24,17 @@ class StableReleaseTests(unittest.TestCase):
         for name in ('atropos/__init__.py', 'client/atropos_client/__init__.py'):
             p = self.root / name
             p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text('__version__ = "1.0.0"\n')
+            p.write_text('__version__ = "1.0.1"\n')
             self.modules[name] = hashlib.sha256(p.read_bytes()).hexdigest()
-        self.qualification = dict(schema=1, version='1.0.0', packages={'atraxis-atropos':'1.0.0','atropos-client':'1.0.0'},
+        self.qualification = dict(schema=1, version='1.0.1', packages={'atraxis-atropos':'1.0.1','atropos-client':'1.0.1'},
             gates={'G1':'closed','G2':'closed','G3':'closed'}, support_matrix='docs/user/v1.0.md',
             evidence_sha256={name:'a'*64 for name in ('cold','reference','endurance')},
             runtime_files_sha256=self.modules)
-        self.save('docs/releases/1.0.0-qualification.json', self.qualification)
+        self.save('docs/releases/1.0.1-qualification.json', self.qualification)
         self.save('stable-ci.json', dict(tested_commit='a'*40, source_tree='b'*40))
         self.manifest = dict(source_commit='a'*40, source_tree='b'*40, packages=self.qualification['packages'], files={})
-        for name in ('dist/atraxis_atropos-1.0.0-py3-none-any.whl','dist/atraxis_atropos-1.0.0.tar.gz',
-                     'client/dist/atropos_client-1.0.0-py3-none-any.whl','client/dist/atropos_client-1.0.0.tar.gz'):
+        for name in ('dist/atraxis_atropos-1.0.1-py3-none-any.whl','dist/atraxis_atropos-1.0.1.tar.gz',
+                     'client/dist/atropos_client-1.0.1-py3-none-any.whl','client/dist/atropos_client-1.0.1.tar.gz'):
             p = self.root / 'stable-download' / name
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(('qualified '+name).encode())
@@ -61,19 +61,19 @@ class StableReleaseTests(unittest.TestCase):
 
     def test_rejects_nonfinal_package(self):
         p = self.root / 'client/pyproject.toml'
-        p.write_text(p.read_text().replace('version = "1.0.0"', 'version = "1.0.0rc1"'))
+        p.write_text(p.read_text().replace('version = "1.0.1"', 'version = "1.0.1rc1"'))
         with self.assertRaisesRegex(ValueError, 'stable_package_versions'):
             release.prepare(self.root)
 
     def test_rejects_a_service_pinned_to_the_old_client(self):
         p = self.root / 'pyproject.toml'
-        p.write_text(p.read_text().replace('observations]==1.0.0','observations]==0.1.0a10'))
+        p.write_text(p.read_text().replace('observations]==1.0.1','observations]==0.1.0a10'))
         with self.assertRaisesRegex(ValueError, 'matching_service_client'):
             release.prepare(self.root)
 
     def test_rejects_open_or_unbound_operational_gates(self):
         for key, value in [('gates', {'G1':'closed','G2':'open','G3':'closed'}), ('evidence_sha256', {})]:
-            self.save('docs/releases/1.0.0-qualification.json', dict(self.qualification, **{key:value}))
+            self.save('docs/releases/1.0.1-qualification.json', dict(self.qualification, **{key:value}))
             with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'operational_gates'):
                 release.prepare(self.root)
 

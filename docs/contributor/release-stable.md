@@ -21,7 +21,7 @@ in independent environments on Python 3.11 and 3.12. The publisher downloads the
 exact Python 3.12 artifacts; it never rebuilds them for publication.
 
 Publication is explicit: dispatch `Publish reviewed stable release` on main with
-the tested PR head, or move `release/publish-1.0.0` from a commit preceding that
+the tested PR head, or move `release/publish-1.0.1` from a commit preceding that
 workflow to the exact reviewed main merge. Ordinary PRs/main pushes do not publish.
 The publisher checks current main, the merged PR's exact tree, successful workflows,
 package versions, matching service/client dependency, operational gates, all runtime
