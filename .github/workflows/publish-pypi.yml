@@ -1,14 +1,17 @@
-name: Publish existing Atropos 1.0.0 to PyPI
+name: Publish existing Atropos 1.0.1 to PyPI
 on:
+  push:
+    branches: [release/publish-pypi-1.0.1]
+    paths: [.github/workflows/publish-pypi.yml]
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: atropos-pypi-1.0.0
+  group: atropos-pypi-1.0.1
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-pypi-1.0.1'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -43,9 +46,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download v1.0.0 --repo decryptus/atropos --dir pypi-source
-          gh api repos/decryptus/atropos/releases/tags/v1.0.0 > pypi-release.json
-          gh api repos/decryptus/atropos/git/ref/tags/v1.0.0 > pypi-tag.json
+          gh release download v1.0.1 --repo decryptus/atropos --dir pypi-source
+          gh api repos/decryptus/atropos/releases/tags/v1.0.1 > pypi-release.json
+          gh api repos/decryptus/atropos/git/ref/tags/v1.0.1 > pypi-tag.json
           python scripts/prepare-pypi.py
           python - <<'PY'
           import json, os
@@ -112,7 +115,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends libmagic1
           python -m venv "$RUNNER_TEMP/from-pypi"
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/from-pypi/bin/pip" install --index-url https://pypi.org/simple 'atraxis-atropos[service]==1.0.0' 'atropos-client[observations]==1.0.0'
+          "$RUNNER_TEMP/from-pypi/bin/pip" install --index-url https://pypi.org/simple 'atraxis-atropos[service]==1.0.1' 'atropos-client[observations]==1.0.1'
           "$RUNNER_TEMP/from-pypi/bin/pip" check
-          "$RUNNER_TEMP/from-pypi/bin/python" -c 'from importlib.metadata import version; assert version("atraxis-atropos") == version("atropos-client") == "1.0.0"'
+          "$RUNNER_TEMP/from-pypi/bin/python" -c 'from importlib.metadata import version; assert version("atraxis-atropos") == version("atropos-client") == "1.0.1"'
           "$RUNNER_TEMP/from-pypi/bin/atropos" --help

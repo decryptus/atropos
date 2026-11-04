@@ -1,7 +1,7 @@
-# Promote the existing 1.0.0 release to PyPI
+# Promote the existing 1.0.1 release to PyPI
 
 The reviewed engine and client wheels/source archives already exist on the
-[GitHub release](https://github.com/decryptus/atropos/releases/tag/v1.0.0).
+[GitHub release](https://github.com/decryptus/atropos/releases/tag/v1.0.1).
 This workflow promotes those exact bytes. It does not rebuild packages, modify
 the stable tag, change runtime code, or deploy a service. Preparing/merging the
 workflow is not evidence of PyPI publication.
@@ -44,8 +44,8 @@ action is pinned to an inspected PyPA revision. See the official
    metadata identities. It runs Twine checks and installed-package acceptance
    outside the checkout in independent engine/client/service environments.
 2. Configure both Trusted Publishers. From Actions, explicitly dispatch
-   **Publish existing Atropos 1.0.0 to PyPI** on the current `main` branch.
-   A push, PR, merge or GitHub release event never uploads automatically.
+   **Publish existing Atropos 1.0.1 to PyPI** on the current `main` branch.
+   Alternatively, advance the dedicated release/publish-pypi-1.0.1 branch to the reviewed main commit.
 3. The workflow requires a reviewed merged tree with successful PR promotion
    validation, re-downloads the stable assets, and checks both PyPI versions.
    It stages only missing files. Any existing file with a different digest,
@@ -62,15 +62,9 @@ action is pinned to an inspected PyPA revision. See the official
    client from PyPI in a fresh environment, checks dependencies/versions and
    runs CLI help. Inspect a failed verification before reporting success.
 
-The immutable manifest is [pypi-1.0.0.json](../../scripts/pypi-1.0.0.json).
+The immutable manifest is [pypi-1.0.1.json](../../scripts/pypi-1.0.1.json).
 It pins the previously qualified archives, provenance and checksum list.
 The original GitHub provenance truthfully records that its publication did not
 publish to a registry; do not rewrite it. Registry delivery has its own workflow
 record. This version-specific workflow must not be reused for a future release
 without reviewing a new manifest and qualification.
-
-The original client package lacks a long description. Twine may report that
-metadata warning; it does not justify changing already published 1.0.0 bytes.
-Improve metadata in a separately versioned release. User installation documents
-must continue to point at the verified GitHub wheels until registry publication
-and installation actually succeed.

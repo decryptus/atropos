@@ -81,3 +81,16 @@ jobs:
       - name: Publish the exact tested image
         if: (github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main') || (github.event_name == 'push' && github.ref == 'refs/heads/release/dockerhub')
         run: python docker/release.py atropos --image atropos:test
+      - name: Verify published Linux amd64 image and installed behavior
+        if: (github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main') || (github.event_name == 'push' && github.ref == 'refs/heads/release/dockerhub')
+        env:
+          VERSION: ${{ steps.identity.outputs.version }}
+        run: |
+          set -euo pipefail
+          ref="decryptus/atropos:$VERSION"
+          tested=$(docker image inspect --format '{{.Id}}' atropos:test)
+          docker pull --platform linux/amd64 "$ref"
+          test "$(docker image inspect --format '{{.Id}}' "$ref")" = "$tested"
+          docker image inspect --format '{{index .RepoDigests 0}}' "$ref"
+          docker tag "$ref" atropos:test
+          python docker/check-image.py
