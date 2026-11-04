@@ -11,13 +11,13 @@ def prepare(root: Path) -> None:
     projects = [tomllib.loads((root / p).read_text())['project']
                 for p in ('pyproject.toml', 'client/pyproject.toml')]
     packages = {p['name']: p['version'] for p in projects}
-    expected_packages = {'atraxis-atropos': '1.0.0', 'atropos-client': '1.0.0'}
+    expected_packages = {'atraxis-atropos': '1.0.1', 'atropos-client': '1.0.1'}
     if packages != expected_packages:
         raise ValueError('stable_package_versions_required')
-    if 'atropos-client[observations]==1.0.0' not in projects[0]['optional-dependencies']['service']:
+    if 'atropos-client[observations]==1.0.1' not in projects[0]['optional-dependencies']['service']:
         raise ValueError('matching_service_client_required')
-    qualification = json.loads((root / 'docs/releases/1.0.0-qualification.json').read_text())
-    if (qualification.get('schema') != 1 or qualification.get('version') != '1.0.0'
+    qualification = json.loads((root / 'docs/releases/1.0.1-qualification.json').read_text())
+    if (qualification.get('schema') != 1 or qualification.get('version') != '1.0.1'
             or qualification.get('packages') != packages
             or qualification.get('gates') != {'G1': 'closed', 'G2': 'closed', 'G3': 'closed'}
             or qualification.get('support_matrix') != 'docs/user/v1.0.md'
@@ -39,8 +39,8 @@ def prepare(root: Path) -> None:
             or manifest.get('source_tree') != evidence['source_tree']
             or manifest.get('packages') != packages):
         raise ValueError('package_identity_mismatch')
-    names = {'dist/atraxis_atropos-1.0.0-py3-none-any.whl', 'dist/atraxis_atropos-1.0.0.tar.gz',
-             'client/dist/atropos_client-1.0.0-py3-none-any.whl', 'client/dist/atropos_client-1.0.0.tar.gz'}
+    names = {'dist/atraxis_atropos-1.0.1-py3-none-any.whl', 'dist/atraxis_atropos-1.0.1.tar.gz',
+             'client/dist/atropos_client-1.0.1-py3-none-any.whl', 'client/dist/atropos_client-1.0.1.tar.gz'}
     actual = {str(p.relative_to(download)) for d in ('dist', 'client/dist')
               for p in (download / d).iterdir()}
     if set(manifest['files']) != names or actual != names:
@@ -56,13 +56,13 @@ def prepare(root: Path) -> None:
     assets.mkdir(exist_ok=False)
     for name in sorted(names):
         shutil.copyfile(download / name, assets / Path(name).name)
-    evidence.update(version='1.0.0', packages=packages, package_manifest=manifest,
+    evidence.update(version='1.0.1', packages=packages, package_manifest=manifest,
                     operational_qualification=qualification, operational_gates_closed=True,
                     prerelease=False, registry_publication=False)
     (assets / 'release-provenance.json').write_text(json.dumps(evidence, indent=2) + '\n')
     checksums = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(assets.iterdir())]
     (assets / 'SHA256SUMS').write_text(''.join(checksums))
-    print('Verified exact engine/client archives and bounded operational qualification: 1.0.0')
+    print('Verified exact engine/client archives and bounded operational qualification: 1.0.1')
 
 
 if __name__ == '__main__':

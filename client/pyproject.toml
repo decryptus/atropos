@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "atropos-client"
-version = "1.0.0"
+version = "1.0.1"
 description = "Atropos HTTP rule client without engine or storage dependencies"
+readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"]
 requires-python = ">=3.11"
