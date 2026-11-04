@@ -10,6 +10,7 @@ from atropos_client.files import read_private
 from .actions import Action, ActionFailed, builtin_actions
 from .authorization import identifier
 from .definitions import name
+from .worker import ExecutionDenied
 
 MAX_ADAPTERS = 64
 MAX_PASSWORD_BYTES = 4096
@@ -81,9 +82,12 @@ def configured_action(action_name, spec, config_path, configuration_loader):
     revision = adapter_revision(spec)
 
     def unchanged():
-        document, _ = configuration_loader()
+        try:
+            document, _ = configuration_loader()
+        except Exception:
+            raise ExecutionDenied('execution_adapter_unavailable') from None
         if document.get('execution_adapters', {}).get(action_name) != spec:
-            raise ActionFailed('execution_adapter_changed')
+            raise ExecutionDenied('execution_adapter_changed')
 
     async def execute(params, context):
         # This check also covers the gap between worker authorization and dispatch.
@@ -109,6 +113,10 @@ def configured_action(action_name, spec, config_path, configuration_loader):
                 auth=(spec['username'], password), transport=transport,
                 client_factory=partial(ExecutionClient, session=session))
             unchanged()
+        except ExecutionDenied:
+            if session is not None:
+                session.close()
+            raise
         except Exception:
             if session is not None:
                 session.close()

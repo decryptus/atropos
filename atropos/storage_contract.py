@@ -8,6 +8,10 @@ from dataclasses import dataclass
 from typing import Protocol
 
 
+class ResourceNotFound(KeyError):
+    """An explicitly requested resource does not exist."""
+
+
 class Conflict(ValueError):
     pass
 

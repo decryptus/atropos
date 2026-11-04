@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from atropos.actions import ActionFailed, Context
+from atropos.worker import ExecutionDenied
 from atropos.dispatch import ApprovedBindings
 from atropos.execution_adapters import adapter_revision, configured_actions, validate_adapters
 
@@ -49,8 +50,8 @@ class ExecutionAdapterTests(unittest.TestCase):
         with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
         password.chmod(0o600)
         self.document['execution_adapters']['ops.approved']['endpoint'] = 'other'
-        with self.assertRaises(ActionFailed): asyncio.run(action.execute({}, context))
-        with self.assertRaises(ActionFailed):
+        with self.assertRaises(ExecutionDenied): asyncio.run(action.execute({}, context))
+        with self.assertRaises(ExecutionDenied):
             asyncio.run(action.simulate({}, Context('run', 'step', 'org/container/web', 1, 5, True, 'test-id')))
 
     def test_reviewed_binding_pins_exact_adapter_configuration(self):
@@ -79,3 +80,23 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(captured['auth'],('operator','synthetic-secret'))
         self.assertEqual(captured['transport'],{'verify':str(ca)})
         self.assertFalse(captured['client_factory'].keywords['session'].trust_env)
+
+    def test_worker_cancels_changed_adapter_before_error_branch(self):
+        from atropos.backend_registry import open_storage
+        from atropos.service import WorkflowService
+        from atropos.worker import Worker
+
+        backend = open_storage(dict(backend='sqlite', url='sqlite:///' + str(self.root / 'state.db')))
+        self.addCleanup(backend.close)
+        store = backend.workflow_store('engine')
+        actions = configured_actions(self.document['execution_adapters'], self.path, self.loader)
+        workflow = dict(version=1, name='review', start='run',
+                        steps={'run': dict(action='ops.approved', on_error='fallback'),
+                               'fallback': dict(action='core.echo')})
+        run = WorkflowService(store, actions).submit(workflow, {}, self.spec['target'])
+        self.document['execution_adapters'].clear()
+        worker = Worker(store, actions, authorizer=lambda state: True, require_authorization=True)
+        asyncio.run(worker.run_once(0))
+        state = store.get(run['id'])
+        self.assertEqual(state['status'], 'cancelled')
+        self.assertEqual(state['attempts'], {'run': 1})

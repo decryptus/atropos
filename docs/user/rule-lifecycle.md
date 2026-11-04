@@ -111,6 +111,10 @@ this lifecycle does not dispatch jobs in the first place.
 
 ## Scopes and permissions
 
+The HTTP commands for reading a draft or revision return the same 404 response
+for a missing rule and a rule outside the caller’s scope. Activation, rollback
+and deactivation check the relevant scopes before reporting a stale generation.
+
 Selections may be servers, containers, server groups or container groups. A
 server selection picks that server; a server-group selection resolves member
 servers. To target containers, select containers or container groups explicitly.

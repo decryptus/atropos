@@ -13,7 +13,7 @@ import time
 
 from .definitions import encode, name
 from .authorization import identifier
-from .storage_contract import Conflict
+from .storage_contract import Conflict, ResourceNotFound
 from .rule_model import dump_rules, validate_rules
 
 MAX_REVISION_BYTES = 131072
@@ -83,7 +83,7 @@ class SQLRuleRepository:
             raise ValueError('invalid_revision')
         raw = self.client.get(self._key(rule_name, revision))
         if raw is None:
-            raise KeyError('rule_revision_not_found')
+            raise ResourceNotFound('rule_revision_not_found')
         record = json.loads(raw)
         document = validate_rules(record['document'])
         if record['content_sha256'] != hashlib.sha256(encode(document).encode()).hexdigest():
@@ -128,7 +128,7 @@ class SQLLifecycleStore:
 
     def report(self, rule_name, report_id):
         raw=self.client.get(self._key(rule_name,'test:'+report_id))
-        if raw is None: raise KeyError('test_report_not_found')
+        if raw is None: raise ResourceNotFound('test_report_not_found')
         return json.loads(raw)
 
     def latest_test(self, rule_name, revision):

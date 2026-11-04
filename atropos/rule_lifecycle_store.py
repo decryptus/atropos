@@ -5,7 +5,7 @@ import uuid
 from redis.exceptions import WatchError
 
 from .definitions import encode
-from .storage_contract import Conflict
+from .storage_contract import Conflict, ResourceNotFound
 
 
 class RedisLifecycleStore:
@@ -36,7 +36,7 @@ class RedisLifecycleStore:
     def report(self, rule_name, report_id):
         raw = self.client.get(self._key(rule_name, 'test:' + report_id))
         if raw is None:
-            raise KeyError('test_report_not_found')
+            raise ResourceNotFound('test_report_not_found')
         return json.loads(raw)
 
     def latest_test(self, rule_name, revision):
