@@ -5,6 +5,7 @@ import threading
 import time
 
 from .actions import Action, ActionFailed, OutcomeUnknown
+from .worker import ExecutionDenied
 
 AUTON_CONNECTION = 'bound-target'
 
@@ -21,9 +22,9 @@ def auton_action(target, uris, endpoint, auth=None, service_factory=None, transp
 
     async def execute(params, context):
         if context.test_mode:
-            raise ActionFailed("Auton test execution adapter is not configured")
+            raise ExecutionDenied("Auton test execution adapter is not configured")
         if context.target != target:
-            raise ActionFailed('target does not match configured action')
+            raise ExecutionDenied('target does not match configured action')
         stopped = threading.Event()
         job_id = hashlib.sha256(context.idempotency_key.encode()).hexdigest()
         try:

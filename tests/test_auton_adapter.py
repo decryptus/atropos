@@ -3,6 +3,7 @@ import unittest
 
 from atropos.actions import ActionFailed, Context, OutcomeUnknown
 from atropos.auton_adapter import auton_action
+from atropos.worker import ExecutionDenied
 
 
 class AutonAdapterTests(unittest.TestCase):
@@ -33,7 +34,7 @@ class AutonAdapterTests(unittest.TestCase):
     def test_target_mismatch_rejected_before_submission(self):
         calls = []
         action = auton_action('node', [], 'job', service_factory=self.factory({}, calls))
-        with self.assertRaises(ActionFailed):
+        with self.assertRaises(ExecutionDenied):
             asyncio.run(action.execute({}, self.context('other')))
         self.assertEqual(calls, [])
 
@@ -49,7 +50,7 @@ class AutonAdapterTests(unittest.TestCase):
     def test_test_mode_does_not_contact_real_executor(self):
         calls = []
         action = auton_action('node', [], 'job', service_factory=self.factory({}, calls))
-        with self.assertRaises(ActionFailed):
+        with self.assertRaises(ExecutionDenied):
             asyncio.run(action.execute({}, Context('run-1', 'step', 'node', 1, 10, True, 'test-1')))
         self.assertEqual(calls, [])
 
