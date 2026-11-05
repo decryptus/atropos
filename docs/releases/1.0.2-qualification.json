@@ -8,7 +8,7 @@
   "gates": {
     "G1": "closed",
     "G2": "closed",
-    "G3": "open"
+    "G3": "closed"
   },
   "support_matrix": "docs/user/v1.0.md",
   "baseline_qualification": "docs/releases/1.0.1-qualification.json",
@@ -79,13 +79,14 @@
   },
   "evidence_sha256": {
     "cold": "2361822fe4f0650296e9191c72ea0215dfbe4262b9afcf0795751f3e00995200",
-    "endurance": "b85ecf38bbea62c765e277fe1d9b1f80bc1b0d257285110fb71929dd8b22c892"
+    "endurance": "b85ecf38bbea62c765e277fe1d9b1f80bc1b0d257285110fb71929dd8b22c892",
+    "reference": "41cc2057e29ffc9f77a580ce05914250f7637c245a41b120b73ace234a16a1b0"
   },
   "external_recipients_qualified": false,
   "qualification_scope": {
     "cold": "The original distinct-host recovery reference is retained. No storage schema, backup or resume change in this patch.",
     "endurance": "Historical four-hour SQLite/Redis workload at its original 1.0.0 inputs.",
-    "reference": "The pilot admitted one workflow. The Bearer-authenticated job completed one verified read-only HTTPS GET (HTTP 200, exit 0). Its notification proxy could not resolve the private Alertmanager at startup. The local webhook recorded zero matching events. Workflow notification outcome remains uncertain; integrated qualification is open."
+    "reference": "The first diagnostic succeeded but its notification proxy failed at startup. A separately authorized second pilot verified notification routing before dispatch. One Bearer-authenticated HTTPS diagnostic returned 200 without remote mutation. The local webhook recorded firing and resolution for that run, and duplicate handling preserved its receipt. Existing containers and source authority were verified."
   },
-  "candidate_tested_source": "1854dbc4f15acd68f86a8dd8ef72315fde6f272c"
+  "candidate_tested_source": "40a6a145c9a890d85a4991e275a5a05c48ba1a7d"
 }

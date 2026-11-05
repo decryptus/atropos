@@ -8,13 +8,13 @@
 **A standalone rule and workflow engine: test a decision, explicitly authorize a
 workflow, and track every step through completion or an uncertain outcome.**
 
-Atropos **1.0.1** is free software under GPL-3.0-only. It runs on your own
+Atropos **1.0.2** is free software under GPL-3.0-only. It runs on your own
 infrastructure, independently of Atraxis and without an AI provider. Atraxis can
 supply its web and terminal interfaces; Atropos owns the rules, permissions,
 storage and workflow execution.
 
-[Website](https://atraxis.io/#atropos) · [Engine on PyPI](https://pypi.org/project/atraxis-atropos/1.0.1/) ·
-[Client on PyPI](https://pypi.org/project/atropos-client/1.0.1/) ·
+[Website](https://atraxis.io/#atropos) · [Engine on PyPI](https://pypi.org/project/atraxis-atropos/1.0.2/) ·
+[Client on PyPI](https://pypi.org/project/atropos-client/1.0.2/) ·
 [User guide](docs/user/README.md) · [Contributing](docs/contributor/README.md) · [Roadmap](ROADMAP.md)
 
 ## What can you do with it?
@@ -85,7 +85,7 @@ On Debian/Ubuntu, install the system `libmagic1` library and Python's venv suppo
 sudo apt-get install python3-venv libmagic1
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install 'atraxis-atropos==1.0.1'
+python -m pip install 'atraxis-atropos==1.0.2'
 python -m pip check
 atropos --help
 ```
@@ -128,7 +128,7 @@ worker` for continuous processing. Submission means queued, not completed.
 In a dedicated engine environment, install the service dependencies:
 
 ```sh
-python -m pip install 'atraxis-atropos[service]==1.0.1'
+python -m pip install 'atraxis-atropos[service]==1.0.2'
 ```
 
 Follow the [rule service guide](docs/user/rule-service.md) to create the private
@@ -147,7 +147,7 @@ the package does not start the service, create credentials or authorize actions.
 In the consuming application's separate environment:
 
 ```sh
-python -m pip install 'atropos-client==1.0.1'
+python -m pip install 'atropos-client==1.0.2'
 ```
 
 The base client does not install the engine, Redis or ZEN. Add `[observations]`
@@ -160,7 +160,7 @@ apart from the version constant. Do not override that pin inside Atraxis's envir
 ```sh
 git clone https://github.com/decryptus/atropos.git
 cd atropos
-git checkout v1.0.1
+git checkout v1.0.2
 python -m pip install .
 ```
 
