@@ -22,13 +22,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download v1.0.2 --repo decryptus/atropos --dir pypi-source
-          gh api repos/decryptus/atropos/releases/tags/v1.0.2 > pypi-release.json
-          gh api repos/decryptus/atropos/git/ref/tags/v1.0.2 > pypi-tag.json
+          gh release download v1.0.3 --repo decryptus/atropos --dir pypi-source
+          gh api repos/decryptus/atropos/releases/tags/v1.0.3 > pypi-release.json
+          gh api repos/decryptus/atropos/git/ref/tags/v1.0.3 > pypi-tag.json
           python scripts/prepare-pypi.py
       - name: Identify verified release source
         id: stable
-        run: echo "commit=$(jq -er '.release_commit' scripts/pypi-1.0.2.json)" >> "$GITHUB_OUTPUT"
+        run: echo "commit=$(jq -er '.release_commit' scripts/pypi-1.0.3.json)" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           ref: ${{ steps.stable.outputs.commit }}
@@ -47,9 +47,9 @@ jobs:
           for role in engine client service; do
             python -m venv "$RUNNER_TEMP/pypi-$role"
           done
-          "$RUNNER_TEMP/pypi-engine/bin/pip" install pypi-source/atraxis_atropos-1.0.2-py3-none-any.whl
-          "$RUNNER_TEMP/pypi-client/bin/pip" install pypi-source/atropos_client-1.0.2-py3-none-any.whl
-          "$RUNNER_TEMP/pypi-service/bin/pip" install 'pypi-source/atropos_client-1.0.2-py3-none-any.whl[observations]' 'pypi-source/atraxis_atropos-1.0.2-py3-none-any.whl[service]'
+          "$RUNNER_TEMP/pypi-engine/bin/pip" install pypi-source/atraxis_atropos-1.0.3-py3-none-any.whl
+          "$RUNNER_TEMP/pypi-client/bin/pip" install pypi-source/atropos_client-1.0.3-py3-none-any.whl
+          "$RUNNER_TEMP/pypi-service/bin/pip" install 'pypi-source/atropos_client-1.0.3-py3-none-any.whl[observations]' 'pypi-source/atraxis_atropos-1.0.3-py3-none-any.whl[service]'
           cd "$RUNNER_TEMP"
           for role in engine client service; do
             "$RUNNER_TEMP/pypi-$role/bin/python" -m pip check

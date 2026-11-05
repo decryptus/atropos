@@ -47,7 +47,7 @@ class PyPIPromotionTests(unittest.TestCase):
         self.assertEqual(len(manifest['files']), 6)
         self.assertEqual(len(pypi.archives(manifest, 'engine')), 2)
         self.assertEqual(len(pypi.archives(manifest, 'client')), 2)
-        self.assertEqual(manifest['release_commit'], '52edebfa3abd06305487f0ca8250906cae43e59d')
+        self.assertEqual(manifest['release_commit'], 'ff7be555001b9cc3bba59c2457c1063f6cb61e40')
 
     def test_tampered_or_symlinked_assets_are_rejected_before_staging(self):
         manifest = json.loads(pypi.MANIFEST.read_bytes())
