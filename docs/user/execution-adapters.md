@@ -21,8 +21,7 @@ execution_adapters:
     target: demo/server/lab
     origin: https://executor.example
     endpoint: inspect
-    username: operator
-    password_file: secrets/executor.password
+    token_file: secrets/executor.token
     # Optional private CA; normal verified TLS is the default:
     # ca_file: secrets/executor-ca.pem
     simulation: noop
@@ -37,9 +36,9 @@ The configured client ignores ambient proxy, netrc and CA environment settings;
 use the approved origin and optional CA file explicitly.
 
 Protect the profile and secret files with mode 0600 in an administrator-owned
-private directory. Relative paths resolve beside the engine profile. Passwords
+private directory. Relative paths resolve beside the engine profile. Auton bearer tokens should have only the scopes needed by the action (read and run for a job), a bounded lifetime, and a private file owned by the worker. Replace that file before expiry. Existing profiles can use the pair `username` and `password_file` for Basic authentication. Combining the two methods is rejected. Tokens and passwords
 are read from private regular files at execution, never emitted by listing commands.
-Changing the password file's contents supports rotation without changing the action
+Changing the credential file's contents supports rotation without changing the action
 identity. Changing its configured path, username, origin, endpoint, target or
 simulation policy changes the adapter revision and requires new binding approval.
 

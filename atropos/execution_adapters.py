@@ -15,8 +15,10 @@ from .worker import ExecutionDenied
 MAX_ADAPTERS = 64
 MAX_PASSWORD_BYTES = 4096
 MAX_CA_BYTES = 1048576
-REQUIRED = frozenset({'backend', 'target', 'origin', 'endpoint', 'username', 'password_file'})
-OPTIONAL = frozenset({'allow_loopback_http', 'ca_file', 'simulation'})
+REQUIRED = frozenset({'backend', 'target', 'origin', 'endpoint'})
+BASIC_FIELDS = frozenset({'username', 'password_file'})
+TOKEN_FIELDS = frozenset({'token_file'})
+OPTIONAL = BASIC_FIELDS | TOKEN_FIELDS | frozenset({'allow_loopback_http', 'ca_file', 'simulation'})
 SIMULATIONS = frozenset({'unsupported', 'noop'})
 
 
@@ -43,10 +45,14 @@ def validate_adapters(specs, resources):
         if type(allow) is not bool or origin(spec['origin'], allow) != spec['origin']:
             raise ValueError('invalid_execution_origin')
         name(spec['endpoint'], 'endpoint')
-        identifier(spec['username'])
-        if ':' in spec['username']:
-            raise ValueError('invalid_execution_username')
-        for key in ('password_file', 'ca_file'):
+        credentials = set(spec) & (BASIC_FIELDS | TOKEN_FIELDS)
+        if credentials not in (BASIC_FIELDS, TOKEN_FIELDS):
+            raise ValueError('invalid_execution_credentials')
+        if credentials == BASIC_FIELDS:
+            identifier(spec['username'])
+            if ':' in spec['username']:
+                raise ValueError('invalid_execution_username')
+        for key in ('token_file', 'password_file', 'ca_file'):
             if key in spec and (type(spec[key]) is not str or not 0 < len(spec[key]) <= 4096):
                 raise ValueError('invalid_execution_file')
         if 'ca_file' in spec and allow:
@@ -95,9 +101,14 @@ def configured_action(action_name, spec, config_path, configuration_loader):
             raise ExecutionDenied('invalid_execution_context')
         unchanged()
         try:
-            password = read_private(local_file(config_path, spec['password_file']), MAX_PASSWORD_BYTES).decode().rstrip('\r\n')
-            if not password or any(ord(c) < 32 or ord(c) == 127 for c in password):
-                raise ValueError('invalid_execution_credentials')
+            if 'token_file' in spec:
+                from auton_client.credentials import BearerCredentials
+                auth = BearerCredentials.from_file(local_file(config_path, spec['token_file']))
+            else:
+                password = read_private(local_file(config_path, spec['password_file']), MAX_PASSWORD_BYTES).decode().rstrip('\r\n')
+                if not password or any(ord(c) < 32 or ord(c) == 127 for c in password):
+                    raise ValueError('invalid_execution_credentials')
+                auth = (spec['username'], password)
             transport = None
             if 'ca_file' in spec:
                 ca = local_file(config_path, spec['ca_file'])
@@ -114,7 +125,7 @@ def configured_action(action_name, spec, config_path, configuration_loader):
             session = requests.Session()
             session.trust_env = False
             adapter = auton_action(spec['target'], [spec['origin']], spec['endpoint'],
-                auth=(spec['username'], password), transport=transport,
+                auth=auth, transport=transport,
                 client_factory=partial(ExecutionClient, session=session))
         except Exception:
             if session is not None:
