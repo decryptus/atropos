@@ -53,8 +53,8 @@ jobs:
           cd "$RUNNER_TEMP"
           for role in engine client service; do
             "$RUNNER_TEMP/pypi-$role/bin/python" -m pip check
-            "$RUNNER_TEMP/pypi-$role/bin/python" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed "installed_tests/$role"
-            "$RUNNER_TEMP/pypi-$role/bin/python" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/$role" -v
+            "$RUNNER_TEMP/pypi-$role/bin/python" "$ATROPOS_ACCEPTANCE_SOURCE/scripts/check-test-collection.py" --installed "installed_tests/$role"
+            "$RUNNER_TEMP/pypi-$role/bin/python" -m unittest discover -s "$ATROPOS_ACCEPTANCE_SOURCE/installed_tests/$role" -v
           done
       - uses: actions/upload-artifact@v4
         with:
