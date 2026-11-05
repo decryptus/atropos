@@ -65,8 +65,8 @@ jobs:
           wheels=("$GITHUB_WORKSPACE"/dist/*.whl)
           "$RUNNER_TEMP/installed-service/bin/python" -m pip install "${wheels[0]}[auton]"
           export AUTON_TEST_DAEMON="$RUNNER_TEMP/installed-autond/bin/autond"
-          "$RUNNER_TEMP/installed-service/bin/python" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed installed_tests/auton
-          "$RUNNER_TEMP/installed-service/bin/python" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/auton" -v
+          "$RUNNER_TEMP/installed-service/bin/python" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed installed_tests/executor
+          "$RUNNER_TEMP/installed-service/bin/python" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/executor" -v
       - name: Record candidate artifact hashes
         run: |
           python - <<'PY'
