@@ -13,7 +13,7 @@ In a dedicated virtual environment with the system libmagic library installed,
 install the published service extra. It includes the matching independent client:
 
 ```sh
-python -m pip install 'atraxis-atropos[service]==1.0.1'
+python -m pip install 'atraxis-atropos[service]==1.0.2'
 # Add [service,redis] instead when selecting a Redis storage or queue backend.
 atropos rules-serve --config /private/atropos-service.yml --port 8082
 ```

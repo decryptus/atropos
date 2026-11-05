@@ -1,6 +1,6 @@
 name: atropos
 x-runtime: &runtime
-  image: decryptus/atropos:${ATROPOS_VERSION:-1.0.1}
+  image: decryptus/atropos:${ATROPOS_VERSION:-1.0.2}
   user: "10001:10001"
   network_mode: host
   read_only: true
