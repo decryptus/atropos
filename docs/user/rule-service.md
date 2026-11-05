@@ -30,6 +30,11 @@ bounded body/connection deadlines and admission controls. Do not expose this
 listener through a plain HTTP tunnel. The loopback hop and local host are trusted.
 The service does not provision the proxy, certificates or production infrastructure.
 
+In source builds using HTTPdis 0.6.39, the request line and headers share a
+10-second read deadline. The body gets 10 seconds plus one second per 32 KiB,
+capped at 120 seconds. Expired headers close the connection. An expired body
+read returns HTTP 408 before the rule command runs.
+
 ## Identity, authority and delegation
 
 Each `identities` entry maps a random bearer-token SHA-256 digest to one subject
