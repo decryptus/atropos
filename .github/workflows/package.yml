@@ -57,6 +57,16 @@ jobs:
             "$interpreter" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed "installed_tests/$role"
             "$interpreter" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/$role" -v 2>&1 | tee "$GITHUB_WORKSPACE/package-evidence/$role-tests.log"
           done
+      - name: Exercise installed Bearer and Basic profiles against authenticated Auton
+        working-directory: ${{ runner.temp }}
+        run: |
+          python -m venv "$RUNNER_TEMP/installed-autond"
+          "$RUNNER_TEMP/installed-autond/bin/python" -m pip install 'autond[auth]==1.3.7'
+          wheels=("$GITHUB_WORKSPACE"/dist/*.whl)
+          "$RUNNER_TEMP/installed-service/bin/python" -m pip install "${wheels[0]}[auton]"
+          export AUTON_TEST_DAEMON="$RUNNER_TEMP/installed-autond/bin/autond"
+          "$RUNNER_TEMP/installed-service/bin/python" "$GITHUB_WORKSPACE/scripts/check-test-collection.py" --installed installed_tests/auton
+          "$RUNNER_TEMP/installed-service/bin/python" -m unittest discover -s "$GITHUB_WORKSPACE/installed_tests/auton" -v
       - name: Record candidate artifact hashes
         run: |
           python - <<'PY'

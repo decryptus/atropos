@@ -1,8 +1,12 @@
 # Atropos roadmap
 
-Updated 4 November 2026. Atropos 1.0 is a deterministic rule and
+Updated 5 November 2026. Atropos 1.0 is a deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
+
+## 1.0.2 release candidate
+
+The Auton executor supports scoped Bearer tokens and credential rotation. Follow the [migration and qualification notes](docs/releases/1.0.2.md). Pilot qualification is pending.
 
 ## 1.0.1 authorization fixes
 
