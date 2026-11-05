@@ -13,7 +13,7 @@ In a dedicated virtual environment with the system libmagic library installed,
 install the published service extra. It includes the matching independent client:
 
 ```sh
-python -m pip install 'atraxis-atropos[service]==1.0.2'
+python -m pip install 'atraxis-atropos[service]==1.0.3'
 # Add [service,redis] instead when selecting a Redis storage or queue backend.
 atropos rules-serve --config /private/atropos-service.yml --port 8082
 ```
@@ -30,7 +30,7 @@ bounded body/connection deadlines and admission controls. Do not expose this
 listener through a plain HTTP tunnel. The loopback hop and local host are trusted.
 The service does not provision the proxy, certificates or production infrastructure.
 
-In source builds using HTTPdis 0.6.39, the request line and headers share a
+In 1.0.3 with HTTPdis 0.6.39, the request line and headers share a
 10-second read deadline. The body gets 10 seconds plus one second per 32 KiB,
 capped at 120 seconds. Expired headers close the connection. An expired body
 read returns HTTP 408 before the rule command runs.

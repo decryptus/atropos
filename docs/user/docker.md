@@ -1,7 +1,7 @@
 # Run Atropos with Docker
 
 The Docker Hub repository is [decryptus/atropos](https://hub.docker.com/r/decryptus/atropos).
-The image version is `1.0.2` for **Linux amd64**. Check the repository's
+The image version is `1.0.3` for **Linux amd64**. Check the repository's
 available tags before pulling: creating the repository alone does not publish an image.
 Use a version tag or digest in deployments; `latest`, `1` and `1.0` are moving aliases.
 
@@ -11,8 +11,8 @@ default. PostgreSQL/MySQL drivers are not included in this image. No database,
 Auton server, Redis server or worker starts automatically.
 
 ```sh
-docker pull decryptus/atropos:1.0.2
-docker run --rm --network none decryptus/atropos:1.0.2 --help
+docker pull decryptus/atropos:1.0.3
+docker run --rm --network none decryptus/atropos:1.0.3 --help
 ```
 
 The process runs as UID/GID **10001:10001**. Keep configuration outside the image,
