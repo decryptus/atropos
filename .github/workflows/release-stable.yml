@@ -1,7 +1,7 @@
 name: Publish reviewed stable release
 on:
   push:
-    branches: [release/publish-1.0.2]
+    branches: [release/publish-1.0.3]
     paths: [.github/workflows/release-stable.yml]
   workflow_dispatch:
     inputs:
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.2'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.3'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -53,7 +53,7 @@ jobs:
             const current = (await github.rest.git.getCommit({...repo, commit_sha: context.sha})).data;
             if (source.tree.sha !== current.tree.sha) throw new Error('Untested release tree');
             const required = ['engine.yml', 'client.yml', 'package.yml', 'auton-recovery.yml',
-              'sql-servers.yml', 'sql-tls.yml'];
+              'sql-servers.yml', 'sql-tls.yml', 'dockerhub.yml'];
             const runs = {};
             for (const workflow_id of required) {
               const result = await github.rest.actions.listWorkflowRuns({...repo, workflow_id,
