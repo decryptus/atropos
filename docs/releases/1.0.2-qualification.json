@@ -85,6 +85,7 @@
   "qualification_scope": {
     "cold": "The original distinct-host recovery reference is retained. No storage schema, backup or resume change in this patch.",
     "endurance": "Historical four-hour SQLite/Redis workload at its original 1.0.0 inputs.",
-    "reference": "Pending one scoped diagnostic with the candidate on the reference pilot and firing and resolved receipts at its local webhook."
-  }
+    "reference": "The pilot admitted one workflow. The Bearer-authenticated job completed one verified read-only HTTPS GET (HTTP 200, exit 0). Its notification proxy could not resolve the private Alertmanager at startup. The local webhook recorded zero matching events. Workflow notification outcome remains uncertain; integrated qualification is open."
+  },
+  "candidate_tested_source": "1854dbc4f15acd68f86a8dd8ef72315fde6f272c"
 }
