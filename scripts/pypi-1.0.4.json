@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "version": "1.0.4",
+  "tag": "v1.0.4",
+  "release_commit": "196511ccbb5b2059b6ae14a7b39a433cb04334c4",
+  "packages": {
+    "client": "atropos-client",
+    "engine": "atraxis-atropos"
+  },
+  "files": {
+    "atraxis_atropos-1.0.4-py3-none-any.whl": "a7f15274facd75001ad2cb21aebb6982e25730263c3d0bdfc128efc11ba4d018",
+    "atraxis_atropos-1.0.4.tar.gz": "f4b03b442a4c2e3a4f40ddfe0f24fbee28ebfd04e26f008bf11956dec51ab02b",
+    "atropos_client-1.0.4-py3-none-any.whl": "e9f61b3d5306dd611c43c5446964d4f4fcf8e49319aa21650b062ba3c0bf7ec7",
+    "atropos_client-1.0.4.tar.gz": "e982f7bec71b520ce181074f91b097beef470f947e4c9022b793468b5520dcf2",
+    "release-provenance.json": "34f417ff8783c855ba743313366db8276ba75b30739b0d088381a106f22ceb94",
+    "SHA256SUMS": "7e7c383be7e27eedc5d810a6234c94ec1266be600d45e7f8cf0c949b313ce5f4"
+  }
+}
