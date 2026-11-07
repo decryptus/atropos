@@ -1,7 +1,7 @@
 name: Publish reviewed stable release
 on:
   push:
-    branches: [release/publish-1.0.3]
+    branches: [release/publish-1.0.4]
     paths: [.github/workflows/release-stable.yml]
   workflow_dispatch:
     inputs:
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.3'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.4'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

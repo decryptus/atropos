@@ -39,7 +39,7 @@ delivery, retain Redis storage explicitly, or install other adapters. No automat
 data migration occurs when changing backends. Generic role parameters replace
 all former product-prefixed configuration names.
 
-For Redis in either role, install `python -m pip install 'atraxis-atropos[redis]==1.0.3'`.
+For Redis in either role, install `python -m pip install 'atraxis-atropos[redis]==1.0.4'`.
 The [Redis example](../../examples/redis.conf) uses AOF and no eviction. Provision
 a persistent volume, size memory and monitor disk capacity. `appendfsync everysec`
 can lose approximately the last second of writes after a crash; choose the fsync
