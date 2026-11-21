@@ -70,6 +70,17 @@ class SQLFixtureImageTests(unittest.TestCase):
         with patch.object(images, 'command_output', side_effect=[json.dumps(identity), 'linux/amd64']):
             self.assertEqual(images.inspect_container('synthetic', expected), identity)
 
+    def test_containerd_manifest_and_index_ids_remain_pinned(self):
+        expected = images.load_lock()['images']['mysql']
+        for image_id in (expected['linux_amd64_manifest'], expected['reference'].split('@')[1]):
+            identity = {'reference': expected['reference'], 'image_id': image_id}
+            with self.subTest(image_id=image_id), patch.object(
+                    images, 'command_output', side_effect=[json.dumps(identity), 'linux/amd64']):
+                self.assertEqual(images.inspect_container('synthetic', expected), identity)
+            with patch.object(images, 'command_output', side_effect=[json.dumps(identity), 'linux/arm64']):
+                with self.assertRaises(ValueError):
+                    images.inspect_container('synthetic', expected)
+
     def test_evidence_requires_every_tls_variant(self):
         lock = images.load_lock()
         with patch.object(images, 'inspect_container', return_value={}) as inspect:

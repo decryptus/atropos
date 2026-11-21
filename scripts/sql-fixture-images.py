@@ -57,8 +57,12 @@ def command_output(args):
 def inspect_container(container, expected):
     identity = json.loads(command_output([
         'docker', 'container', 'inspect', '--format', INSPECT_FORMAT, container]))
-    if identity != {'reference': expected['reference'],
-                    'image_id': expected['linux_amd64_image_id']}:
+    # Docker's classic store reports the config digest; containerd reports
+    # the locked manifest/index digest. Both remain content-addressed.
+    image_ids = {expected['linux_amd64_image_id'], expected['linux_amd64_manifest'],
+                 expected['reference'].split('@')[1]}
+    if (identity.get('reference') != expected['reference']
+            or identity.get('image_id') not in image_ids):
         raise ValueError('Running SQL fixture does not match its image lock')
     platform = command_output(['docker', 'image', 'inspect', '--format',
                                '{{.Os}}/{{.Architecture}}', identity['image_id']])
