@@ -34,7 +34,7 @@
       "semantic-version": "2.10.0",
       "setuptools": "84.2.1",
       "six": "1.17.0",
-      "sonicprobe": "0.3.62",
+      "sonicprobe": "0.3.66",
       "typing_extensions": "4.16.0",
       "urllib3": "2.8.0",
       "zen-engine": "2.1.2"

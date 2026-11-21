@@ -14,7 +14,7 @@ class EnginePackageTests(InstalledCase):
         verify_package(self, 'atropos', ENGINE_DISTRIBUTION, 'atropos')
         for module in ('atropos_client', 'redis', 'zen', 'auton'):
             self.assertIsNone(importlib.util.find_spec(module))
-        self.assertIn('sonicprobe==0.3.62', importlib.metadata.requires(ENGINE_DISTRIBUTION))
+        self.assertIn('sonicprobe==0.3.66', importlib.metadata.requires(ENGINE_DISTRIBUTION))
         self.assertIn('storage-backup', self.cli('--help').stdout)
         self.cli(code=2)
         # Configured rule-service operations require the documented optional extra.
