@@ -60,7 +60,7 @@ jobs:
             "$RUNNER_TEMP/pypi-$role/bin/python" "$ATROPOS_ACCEPTANCE_SOURCE/scripts/check-test-collection.py" --installed "installed_tests/$role"
             "$RUNNER_TEMP/pypi-$role/bin/python" -m unittest discover -s "$ATROPOS_ACCEPTANCE_SOURCE/installed_tests/$role" -v
           done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: pypi-promotion-plan
           path: pypi-plan.json

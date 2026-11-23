@@ -58,7 +58,7 @@ jobs:
               for role, files in plan['pending_uploads'].items():
                   output.write(f'{role}={len(files)}\n')
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: steps.plan.outputs.client != '0' || steps.plan.outputs.engine != '0'
         with:
           name: verified-pypi-uploads
