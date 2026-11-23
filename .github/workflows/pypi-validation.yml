@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
@@ -33,7 +33,7 @@ jobs:
       - name: Identify verified release source
         id: stable
         run: echo "commit=$(jq -er '.release_commit' scripts/pypi-1.0.5.json)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ steps.stable.outputs.commit }}
           path: stable-source
