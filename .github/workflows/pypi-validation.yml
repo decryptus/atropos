@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Verify promotion guards
@@ -33,7 +33,7 @@ jobs:
       - name: Identify verified release source
         id: stable
         run: echo "commit=$(jq -er '.release_commit' scripts/pypi-1.0.5.json)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ steps.stable.outputs.commit }}
           path: stable-source
@@ -60,7 +60,7 @@ jobs:
             "$RUNNER_TEMP/pypi-$role/bin/python" "$ATROPOS_ACCEPTANCE_SOURCE/scripts/check-test-collection.py" --installed "installed_tests/$role"
             "$RUNNER_TEMP/pypi-$role/bin/python" -m unittest discover -s "$ATROPOS_ACCEPTANCE_SOURCE/installed_tests/$role" -v
           done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: pypi-promotion-plan
           path: pypi-plan.json
