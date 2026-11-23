@@ -22,7 +22,7 @@ jobs:
       client: ${{ steps.plan.outputs.client }}
       engine: ${{ steps.plan.outputs.engine }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Require the reviewed main tree and successful promotion validation
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Verify registry bytes and installation from PyPI
