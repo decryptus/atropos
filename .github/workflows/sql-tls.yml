@@ -2,22 +2,26 @@ name: AnySQL verified remote TLS
 on: [push, pull_request]
 permissions:
   contents: read
+concurrency:
+  # Only pull request runs share a group, so pushes are never queued or cancelled.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
 jobs:
   tls:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: decryptus/sonicprobe
           ref: a1cca4624910e26669484fe6826e67837b28ff4a
           path: test-fixtures/sonicprobe
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Install candidate and test dependencies
