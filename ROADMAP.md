@@ -1,8 +1,24 @@
 # Atropos roadmap
 
-Updated 5 November 2026. Atropos 1.0 is a deterministic rule and
+Updated 22 November 2026. Atropos 1.0 is a deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
+
+## 1.0.5 Sonicprobe maintenance
+
+The service requires Sonicprobe 0.3.66, which adds missing `Date` and `Message-ID`
+headers to outgoing email. Engine and client versions are aligned at 1.0.5; no
+storage format or rule behavior changes. The [GitHub release](https://github.com/decryptus/atropos/releases/tag/v1.0.5)
+and the [`atraxis-atropos`](https://pypi.org/project/atraxis-atropos/1.0.5/) and
+[`atropos-client`](https://pypi.org/project/atropos-client/1.0.5/) packages are
+published. No new endurance or external email delivery evidence is claimed. See the
+[1.0.5 release notes](docs/releases/1.0.5.md).
+
+## 1.0.4 HTTPdis 0.7.1
+
+The service uses HTTPdis 0.7.1 with a default TCP backlog of 128. Replace legacy
+SHA-1 or DES htpasswd entries with supported hashes such as bcrypt before upgrading
+a service that uses HTTP Basic authentication. See the [1.0.4 release notes](docs/releases/1.0.4.md).
 
 ## 1.0.3 HTTP read deadlines
 
