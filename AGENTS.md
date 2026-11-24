@@ -92,6 +92,12 @@ does not extend to other projects or authorize deleting stored data.
   report checks performed, and list any required surface still not updated with
   its concrete blocker. Never imply that a planned publication already happened.
 
+## Website synchronization (atraxis.io)
+
+- The public website for Atropos is atraxis.io, built from the private repository `decryptus/atraxis-site` (Atropos sections of index.html, fr.html and demo.html).
+- Versions shown on the site are never written by hand: current versions are marked with `data-version` / `data-version-href` and filled by `shared/render_atraxis.py` from `decryptus/auton-site`, which resolves the latest PyPI release and requires the matching Git tag and Docker Hub image. Its CI fails when a displayed version differs from PyPI.
+- After every release published to PyPI and Docker Hub, regenerate atraxis-site with that renderer, review the bilingual prose that describes the release, and deploy it in the same delivery. A release is not complete while atraxis.io shows an older version.
+
 ## Coding style and validation
 
 - Keep fixed routes, schemas, enum choices, limits and patterns in named constants. In Python use `UPPER_CASE` for module constants and `_UPPER_CASE` for private ones.
