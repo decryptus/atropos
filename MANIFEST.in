@@ -1,17 +1,18 @@
-include AGENTS.md ROADMAP.md
-recursive-include docs *.md *.json
+include README.md LICENSE
 recursive-include examples *.yml *.yaml *.json
-recursive-include scripts *.py
-recursive-include tests *.py
-recursive-include service_tests *.py
-recursive-include integration_tests *.py
-recursive-include installed_tests *.py
-recursive-include release_tests *.py
-recursive-include client_tests *.py
-recursive-include client *.py *.toml *.md LICENSE
-prune client/dist
-prune client/build
-global-exclude __pycache__ *.py[cod]
 
-include Dockerfile .dockerignore
-graft docker
+# Repository and maintainer material never ships in the source distribution.
+prune tests
+prune textual_tests
+prune docs
+prune scripts
+prune .github
+prune debian
+prune docker
+global-exclude __pycache__ *.py[cod]
+prune client
+prune client_tests
+prune installed_tests
+prune integration_tests
+prune release_tests
+prune service_tests
