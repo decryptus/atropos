@@ -152,8 +152,9 @@ python -m pip install 'atropos-client==1.0.6'
 
 The base client does not install the engine, Redis or ZEN. Add `[observations]`
 when that application needs signed observation envelopes. Follow its own dependency
-pins: Atraxis 1.0.0 still pins client 0.1.0a10, whose functional code matches 1.0.0
-apart from the version constant. Do not override that pin inside Atraxis's environment.
+pins: Atraxis 1.0.10 pins client 1.0.0, and Atraxis 1.0.0 pinned client 0.1.0a10,
+whose functional code matches 1.0.0 apart from the version constant. Do not override
+these pins inside Atraxis's environment.
 
 ### Install from source instead
 
