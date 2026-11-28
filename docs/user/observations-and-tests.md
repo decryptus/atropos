@@ -17,7 +17,8 @@ intervention has been enabled. Real actions require explicit [Auton](execution-a
 
 ## Require collected observations
 
-Install engine 0.1.0a20 and client 0.1.0a10 with the `observations` extra.
+Install engine and client 1.0.6 with the `observations` extra (supported since
+engine 0.1.0a20 and client 0.1.0a10).
 The engine `service` extra and Atraxis `rules` extra select that optional signing
 support. The base API client still has no rule engine, Redis or ZEN dependency.
 
