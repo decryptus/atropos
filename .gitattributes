@@ -1,0 +1,15 @@
+# Repository and maintainer material stays out of GitHub source archives.
+/AGENTS.md export-ignore
+/ROADMAP.md export-ignore
+/.github/ export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.dockerignore export-ignore
+/tests/ export-ignore
+/client_tests/ export-ignore
+/installed_tests/ export-ignore
+/integration_tests/ export-ignore
+/release_tests/ export-ignore
+/service_tests/ export-ignore
+/sql_tests/ export-ignore
+/sql_tls_tests/ export-ignore

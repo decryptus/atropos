@@ -1,7 +1,7 @@
 name: Publish reviewed stable release
 on:
   push:
-    branches: [release/publish-1.0.5]
+    branches: [release/publish-1.0.6]
     paths: [.github/workflows/release-stable.yml]
   workflow_dispatch:
     inputs:
@@ -17,19 +17,19 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.5'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/publish-1.0.6'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
       actions: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Verify exact source and successful required PR workflows
         id: qualification
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           TESTED_SHA: ${{ inputs.tested_sha }}
         with:
@@ -75,7 +75,7 @@ jobs:
       - name: Verify package identity and stage exact archives
         run: python scripts/prepare-stable-release.py
       - name: Publish draft only after every asset is attached
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

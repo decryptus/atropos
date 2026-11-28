@@ -1,8 +1,20 @@
 # Atropos roadmap
 
-Updated 22 November 2026. Atropos 1.0 is a deterministic rule and
+Updated 26 November 2026. Atropos 1.0 is a deterministic rule and
 workflow engine, with a separately packaged API client. This roadmap is a product
 direction, not a release-date or production-readiness commitment.
+
+## 1.0.6 Packaging maintenance
+
+The engine and client source distributions now contain only what is needed to
+build, install and run them; repository, test and maintainer files are no longer
+included. Runtime code is unchanged apart from the version constants, and engine
+and client versions are aligned at 1.0.6. The [GitHub release](https://github.com/decryptus/atropos/releases/tag/v1.0.6),
+the [`atraxis-atropos`](https://pypi.org/project/atraxis-atropos/1.0.6/) and
+[`atropos-client`](https://pypi.org/project/atropos-client/1.0.6/) packages and the
+`decryptus/atropos:1.0.6` image are published; atraxis.io shows 1.0.6. No new
+endurance or external email delivery evidence is claimed. See the
+[1.0.6 release notes](docs/releases/1.0.6.md).
 
 ## 1.0.5 Sonicprobe maintenance
 
