@@ -12,6 +12,10 @@ updates:
         update-types: [minor, patch]
       pip-major:
         update-types: [major]
+  - package-ecosystem: pip
+    directory: /scripts
+    schedule:
+      interval: weekly
   - package-ecosystem: docker
     directory: /
     schedule:
